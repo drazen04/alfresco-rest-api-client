@@ -1,15 +1,14 @@
 package it.stepwise.alfresco.restapiclient.core.nodes;
 
 import it.stepwise.alfresco.restapiclient.AlfrescoRestApi;
-import it.stepwise.alfresco.restapiclient.common.Constants;
 import it.stepwise.alfresco.restapiclient.util.APIUtil;
 import it.stepwise.alfresco.restapiclient.util.ResponseEither;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class NodesApi {
+import static it.stepwise.alfresco.restapiclient.common.Constants.*;
 
-    public static final String BASE_URL_CORE_NODES_API = "alfresco/api/-default-/public/alfresco/versions/" + Constants.NUM_VERSION_PLACEHOLDER + "/nodes/" + Constants.NODE_ID_PLACEHOLDER;
+public class NodesApi {
 
     private final AlfrescoRestApi alfrescoRestApi;
     private final int numVersion;
@@ -25,32 +24,34 @@ public class NodesApi {
     }
 
     public ResponseEither<Error, JSONObject> createNode(String nodeId, JSONObject jsonCreateNode) {
-        APIUtil.insertVersionInURL(BASE_URL_CORE_NODES_API, this.numVersion);
+        String url = buildNodeUrl(nodeId);
         return null;
     }
 
     public ResponseEither<Error, JSONObject> updateNode(String nodeId, JSONObject jsonBodyUpdate) {
-        APIUtil.insertVersionInURL(BASE_URL_CORE_NODES_API, this.numVersion);
+        String url = buildNodeUrl(nodeId);
         return null;
     }
 
     public boolean lockNode(String nodeId, JSONObject nodeBodyLock) {
-        APIUtil.insertVersionInURL(BASE_URL_CORE_NODES_API, this.numVersion);
+        String url = buildNodeUrl(nodeId);
         return false;
     }
 
     public ResponseEither<Error, JSONObject> moveNode(String nodeId, JSONObject jsonMoveNode) {
-        APIUtil.insertVersionInURL(BASE_URL_CORE_NODES_API, this.numVersion);
+        String url = buildNodeUrl(nodeId);
         return null;
     }
 
     public ResponseEither<Error, JSONArray> getListNodeChildren(String nodeId) {
-        APIUtil.insertVersionInURL(BASE_URL_CORE_NODES_API, this.numVersion);
+        String url = buildNodeUrl(nodeId);
         return null;
     }
 
     public ResponseEither<Error, JSONObject> getNode(String nodeId) {
-        APIUtil.insertVersionInURL(BASE_URL_CORE_NODES_API, this.numVersion);
+        String url = buildNodeUrl(nodeId);
+
+
         return null;
     }
 
@@ -66,5 +67,14 @@ public class NodesApi {
 //            this.value = value;
 //        }
 //    }
+
+    private String buildNodeUrl(String nodeId) {
+        return APIUtil.composeURL(
+                BASE_URL_CORE_NODES_API,
+                (urlComposed) -> urlComposed.replace(NUM_VERSION_PLACEHOLDER, String.valueOf(this.numVersion)),
+                (urlComposed) -> urlComposed.replace(NODE_ID_PLACEHOLDER, nodeId),
+                (urlComposed) -> urlComposed + "?" + "alfTicket=" + this.alfrescoRestApi.getTicket()
+        );
+    }
 
 }
