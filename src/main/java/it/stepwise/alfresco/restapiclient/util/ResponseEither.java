@@ -16,11 +16,11 @@ public class ResponseEither<Error, R> {
         this.data = data;
     }
 
-    public static <L,R> ResponseEither<L,R> right(R value) {
+    public static <L,R> ResponseEither<L,R> data(R value) {
         return new ResponseEither<>(null, value);
     }
 
-    public static <Error,R> ResponseEither<Error,R> left(Error value) {
+    public static <Error,R> ResponseEither<Error,R> error(Error value) {
         return new ResponseEither<>(value, null);
     }
 
@@ -30,6 +30,15 @@ public class ResponseEither<Error, R> {
 
     public Error getError() {
         return this.error;
+    }
+
+
+    public boolean hasError() {
+        return this.error != null;
+    }
+
+    public boolean hasData() {
+        return this.data != null;
     }
 
 }
