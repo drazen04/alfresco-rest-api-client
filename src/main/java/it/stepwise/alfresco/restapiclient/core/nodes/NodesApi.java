@@ -3,7 +3,7 @@ package it.stepwise.alfresco.restapiclient.core.nodes;
 import it.stepwise.alfresco.restapiclient.AlfrescoRestApi;
 import it.stepwise.alfresco.restapiclient.common.Constants;
 import it.stepwise.alfresco.restapiclient.util.APIUtil;
-import org.apache.commons.lang3.tuple.ImmutablePair;
+import it.stepwise.alfresco.restapiclient.util.ResponseEither;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -11,8 +11,8 @@ public class NodesApi {
 
     public static final String BASE_URL_CORE_NODES_API = "alfresco/api/-default-/public/alfresco/versions/" + Constants.NUM_VERSION_PLACEHOLDER + "/nodes/" + Constants.NODE_ID_PLACEHOLDER;
 
-    private AlfrescoRestApi alfrescoRestApi;
-    private int numVersion;
+    private final AlfrescoRestApi alfrescoRestApi;
+    private final int numVersion;
 
     public NodesApi(AlfrescoRestApi alfrescoRestApi) {
         this.alfrescoRestApi = alfrescoRestApi;
@@ -24,12 +24,12 @@ public class NodesApi {
         this.numVersion = numVersion;
     }
 
-    public ImmutablePair<Integer, JSONObject> createNode(String nodeId, JSONObject jsonCreateNode) {
+    public ResponseEither<Error, JSONObject> createNode(String nodeId, JSONObject jsonCreateNode) {
         APIUtil.insertVersionInURL(BASE_URL_CORE_NODES_API, this.numVersion);
         return null;
     }
 
-    public ImmutablePair<Integer, JSONObject> updateNode(String nodeId, JSONObject jsonBodyUpdate) {
+    public ResponseEither<Error, JSONObject> updateNode(String nodeId, JSONObject jsonBodyUpdate) {
         APIUtil.insertVersionInURL(BASE_URL_CORE_NODES_API, this.numVersion);
         return null;
     }
@@ -39,17 +39,17 @@ public class NodesApi {
         return false;
     }
 
-    public ImmutablePair<Integer, JSONObject> moveNode(String nodeId, JSONObject jsonMoveNode) {
+    public ResponseEither<Error, JSONObject> moveNode(String nodeId, JSONObject jsonMoveNode) {
         APIUtil.insertVersionInURL(BASE_URL_CORE_NODES_API, this.numVersion);
         return null;
     }
 
-    public ImmutablePair<Integer, JSONArray> getListNodeChildren(String nodeId) {
+    public ResponseEither<Error, JSONArray> getListNodeChildren(String nodeId) {
         APIUtil.insertVersionInURL(BASE_URL_CORE_NODES_API, this.numVersion);
         return null;
     }
 
-    public ImmutablePair<Integer, JSONObject> getNode(String nodeId) {
+    public ResponseEither<Error, JSONObject> getNode(String nodeId) {
         APIUtil.insertVersionInURL(BASE_URL_CORE_NODES_API, this.numVersion);
         return null;
     }
