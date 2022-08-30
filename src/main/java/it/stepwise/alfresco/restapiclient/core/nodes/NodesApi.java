@@ -4,14 +4,13 @@ import it.stepwise.alfresco.restapiclient.AlfrescoRestApi;
 import it.stepwise.alfresco.restapiclient.util.APIUtil;
 import it.stepwise.alfresco.restapiclient.util.Error;
 import it.stepwise.alfresco.restapiclient.util.ResponseEither;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
 
 import static it.stepwise.alfresco.restapiclient.common.Constants.*;
 
@@ -55,36 +54,16 @@ public class NodesApi {
         return null;
     }
 
-    public ResponseEither<Error, JSONObject> getNode(String nodeId) {
+    public ResponseEither<Error, JSONObject> getNode(String nodeId) throws URISyntaxException {
         String url = buildNodeUrl(nodeId);
 
-        try (
-                CloseableHttpClient client = HttpClients.createDefault();
-                CloseableHttpResponse response = client.execute(new HttpGet(url))
-        ) {
-            int statusCode = response.getStatusLine().getStatusCode();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(url))
+                .version(HttpClient.Version.HTTP_2)
+                .GET()
+                .build();
 
-            if (statusCode != 200) {
-                Error error = new Error
-                        (
-                        response.getStatusLine().getStatusCode(),
-                        response.getStatusLine().getReasonPhrase(),
-                        ""
-                        );
-                return ResponseEither.error(error);
-            }
-
-            String result = EntityUtils.toString(response.getEntity());
-
-            // TODO: create/handle specific response
-            JSONObject jsonResponse = new JSONObject(result);
-//            JSONArray entries = jsonResponse.getJSONObject("list").getJSONArray("entries");
-
-            return ResponseEither.data(jsonResponse);
-
-        } catch (Exception e) {
-            return ResponseEither.error(new Error(500, "Internal server error",""));
-        }
+        return null;
     }
 
     // TODO: Possibile enum per il body di lock node
