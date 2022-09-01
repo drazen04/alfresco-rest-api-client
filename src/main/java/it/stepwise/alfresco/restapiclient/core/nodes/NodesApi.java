@@ -7,10 +7,12 @@ import it.stepwise.alfresco.restapiclient.util.ResponseEither;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 import static it.stepwise.alfresco.restapiclient.common.Constants.*;
 
@@ -54,14 +56,16 @@ public class NodesApi {
         return null;
     }
 
-    public ResponseEither<Error, JSONObject> getNode(String nodeId) throws URISyntaxException {
+    public ResponseEither<Error, JSONObject> getNode(String nodeId) throws URISyntaxException, IOException, InterruptedException {
         String url = buildNodeUrl(nodeId);
 
+        HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(url))
                 .version(HttpClient.Version.HTTP_2)
-                .GET()
                 .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         return null;
     }
