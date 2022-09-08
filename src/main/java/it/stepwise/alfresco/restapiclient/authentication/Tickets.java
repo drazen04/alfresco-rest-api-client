@@ -1,5 +1,6 @@
 package it.stepwise.alfresco.restapiclient.authentication;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.stepwise.alfresco.restapiclient.AlfrescoRestApi;
 import it.stepwise.alfresco.restapiclient.common.Constants;
@@ -16,14 +17,15 @@ import java.util.HashMap;
 
 import static it.stepwise.alfresco.restapiclient.common.Constants.NUM_VERSION_PLACEHOLDER;
 
+// TODO: implement retry logic
 public class Tickets {
     public static final String BASE_URL_AUTHENTICATION_API  = "alfresco/api/-default-/public/authentication/versions/" + Constants.NUM_VERSION_PLACEHOLDER + "/tickets";
-    private String user;
-    private String password;
-    private AlfrescoRestApi alfrescoRestApi;
+    private final String userId;
+    private final String password;
+    private final AlfrescoRestApi alfrescoRestApi;
 
     public Tickets(AlfrescoRestApi alfrescoRestApi, String user, String password) {
-        this.user = user;
+        this.userId = user;
         this.password = password;
         this.alfrescoRestApi = alfrescoRestApi;
     }
@@ -35,13 +37,13 @@ public class Tickets {
                 (urlComposed) -> urlComposed.replace(NUM_VERSION_PLACEHOLDER, String.valueOf(this.alfrescoRestApi.getNumVersion()))
         );
 
-        var values = new HashMap<String, String>() {{
-            put("userId", "admin");
-            put ("password", "admin");
+        var credentials = new HashMap<String, String>() {{
+            put("userId", userId);
+            put ("password", password);
         }};
 
         var objectMapper = new ObjectMapper();
-        String requestBody = objectMapper.writeValueAsString(values);
+        String requestBody = objectMapper.writeValueAsString(credentials);
 
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
@@ -51,6 +53,9 @@ public class Tickets {
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        return ResponseEither.data( (String) response.body() );
+        JsonNode actualObj = objectMapper.readTree(response.body());
+        JsonNode jsonNode = actualObj.get("entry");
+
+        return ResponseEither.data( jsonNode.get("id").asText() );
     }
 }
