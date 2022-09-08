@@ -4,12 +4,9 @@ import it.stepwise.alfresco.restapiclient.AlfrescoRestApi;
 import it.stepwise.alfresco.restapiclient.util.APIUtil;
 import it.stepwise.alfresco.restapiclient.util.Error;
 import it.stepwise.alfresco.restapiclient.util.ResponseEither;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -51,23 +48,67 @@ public class NodesApi {
         return null;
     }
 
-    public ResponseEither<Error, JSONArray> getListNodeChildren(String nodeId) {
+    public ResponseEither<Error, JSONObject> getListNodeChildren(String nodeId) {
         String url = buildNodeUrl(nodeId);
-        return null;
-    }
 
-    public ResponseEither<Error, JSONObject> getNode(String nodeId) throws URISyntaxException, IOException, InterruptedException {
-        String url = buildNodeUrl(nodeId);
+        String urlChildren =  APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/children");
+        String urlChildrenWithTicket =  APIUtil.composeURL(urlChildren,
+                (urlComposed) -> urlComposed + "?" + "alf_ticket=" + this.alfrescoRestApi.getTicket());
+
+
 
         HttpClient httpClient = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(url))
-                .version(HttpClient.Version.HTTP_2)
-                .build();
 
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(urlChildrenWithTicket))
+                    .version(HttpClient.Version.HTTP_2)
+                    .header("Accept", "application/json")
+                    .GET()
+                    .build();
 
-        return null;
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() != 200) {
+                JSONObject responseJson = new JSONObject(response.body());
+                JSONObject error = responseJson.getJSONObject("error");
+                return ResponseEither.error(new Error(response.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
+            }
+            JSONObject responseArray = new JSONObject(response.body());
+            return ResponseEither.data(responseArray);
+        } catch (Exception e) {
+            return ResponseEither.error(new Error(500, "Internal server error", e.getMessage()));
+        }
+    }
+
+    public ResponseEither<Error, JSONObject> getNode(String nodeId) {
+        String url = buildNodeUrl(nodeId);
+        String urlChildrenWithTicket =  APIUtil.composeURL(url,
+                (urlComposed) -> urlComposed + "?" + "alf_ticket=" + this.alfrescoRestApi.getTicket());
+
+
+        HttpClient httpClient = HttpClient.newHttpClient();
+
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(urlChildrenWithTicket))
+                    .version(HttpClient.Version.HTTP_2)
+                    .header("Accept", "application/json")
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            JSONObject responseJson = new JSONObject(response.body());
+            if (response.statusCode() != 200) {
+                JSONObject error = responseJson.getJSONObject("error");
+                return ResponseEither.error(new Error(response.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
+            }
+            return ResponseEither.data(responseJson.getJSONObject("entry"));
+        } catch (Exception e) {
+            return ResponseEither.error(new Error(500, "Internal server error", e.getMessage()));
+        }
+
     }
 
     // TODO: Possibile enum per il body di lock node
@@ -86,9 +127,9 @@ public class NodesApi {
     private String buildNodeUrl(String nodeId) {
         return APIUtil.composeURL(
                 BASE_URL_CORE_NODES_API,
+                (urlComposed) -> alfrescoRestApi.getHost().getHostURL() + "/" + urlComposed,
                 (urlComposed) -> urlComposed.replace(NUM_VERSION_PLACEHOLDER, String.valueOf(this.numVersion)),
-                (urlComposed) -> urlComposed.replace(NODE_ID_PLACEHOLDER, nodeId),
-                (urlComposed) -> urlComposed + "?" + "alfTicket=" + this.alfrescoRestApi.getTicket()
+                (urlComposed) -> urlComposed.replace(NODE_ID_PLACEHOLDER, nodeId)
         );
     }
 
