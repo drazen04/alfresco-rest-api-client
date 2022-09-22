@@ -1,12 +1,13 @@
 package it.stepwise.alfresco.restapiclient.util;
 
 import java.io.IOException;
-import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpRequest.BodyPublisher;
+import java.net.http.HttpRequest.BodyPublishers;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -42,5 +43,10 @@ public class APIUtil {
         }
         byteArrays.add(("--" + boundary + "--\r\n").getBytes(StandardCharsets.UTF_8));
         return BodyPublishers.ofByteArrays(byteArrays);
+    }
+
+    public static String getBasicAuthenticationHeader(String username, String password) {
+        String valueToEncode = username + ":" + password;
+        return "Basic " + Base64.getEncoder().encodeToString(valueToEncode.getBytes());
     }
 }

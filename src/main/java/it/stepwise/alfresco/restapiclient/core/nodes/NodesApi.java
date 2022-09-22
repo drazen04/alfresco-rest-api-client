@@ -1,6 +1,8 @@
 package it.stepwise.alfresco.restapiclient.core.nodes;
 
 import it.stepwise.alfresco.restapiclient.AlfrescoRestApi;
+import it.stepwise.alfresco.restapiclient.InputBody;
+import it.stepwise.alfresco.restapiclient.queryparams.Include;
 import it.stepwise.alfresco.restapiclient.util.APIUtil;
 import it.stepwise.alfresco.restapiclient.util.Error;
 import it.stepwise.alfresco.restapiclient.util.ResponseEither;
@@ -10,6 +12,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static it.stepwise.alfresco.restapiclient.common.Constants.*;
 
@@ -52,10 +56,6 @@ public class NodesApi {
         String url = buildNodeUrl(nodeId);
 
         String urlChildren =  APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/children");
-        String urlChildrenWithTicket =  APIUtil.composeURL(urlChildren,
-                (urlComposed) -> urlComposed + "?" + "alf_ticket=" + this.alfrescoRestApi.getTicket());
-
-
 
         HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -63,6 +63,7 @@ public class NodesApi {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI(urlChildrenWithTicket))
                     .version(HttpClient.Version.HTTP_2)
+                    .header("Authorization", APIUtil.getBasicAuthenticationHeader(alfrescoRestApi.getUser(), alfrescoRestApi.getPassword()))
                     .header("Accept", "application/json")
                     .GET()
                     .build();
@@ -74,6 +75,7 @@ public class NodesApi {
                 JSONObject error = responseJson.getJSONObject("error");
                 return ResponseEither.error(new Error(response.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
             }
+
             JSONObject responseArray = new JSONObject(response.body());
             return ResponseEither.data(responseArray);
         } catch (Exception e) {
@@ -83,16 +85,14 @@ public class NodesApi {
 
     public ResponseEither<Error, JSONObject> getNode(String nodeId) {
         String url = buildNodeUrl(nodeId);
-        String urlChildrenWithTicket =  APIUtil.composeURL(url,
-                (urlComposed) -> urlComposed + "?" + "alf_ticket=" + this.alfrescoRestApi.getTicket());
-
 
         HttpClient httpClient = HttpClient.newHttpClient();
 
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI(urlChildrenWithTicket))
+                    .uri(new URI(url))
                     .version(HttpClient.Version.HTTP_2)
+                    .header("Authorization", APIUtil.getBasicAuthenticationHeader(alfrescoRestApi.getUser(), alfrescoRestApi.getPassword()))
                     .header("Accept", "application/json")
                     .GET()
                     .build();
