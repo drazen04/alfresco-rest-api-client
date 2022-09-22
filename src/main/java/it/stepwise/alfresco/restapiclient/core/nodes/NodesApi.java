@@ -47,9 +47,49 @@ public class NodesApi {
         return false;
     }
 
-    public ResponseEither<Error, JSONObject> moveNode(String nodeId, JSONObject jsonMoveNode) {
+    public ResponseEither<Error, JSONObject> moveNode(String nodeId, NodeBodyMove nodeBodyMove, Include... include) {
         String url = buildNodeUrl(nodeId);
-        return null;
+
+        String urlMove =
+                include.length != 0 ?
+                        APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/move") + "?" + "include=" +  Stream.of(include).map(incl -> incl.value).collect(Collectors.joining(",")) :
+                        APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/move");
+
+        return HttpPost(urlMove, nodeBodyMove, 200);
+    }
+
+    /**
+     * TODO: make interface for HTTP Method
+     * @param url
+     * @param inputBody
+     * @return
+     */
+    public ResponseEither<Error, JSONObject> HttpPost(String url, InputBody inputBody, int httpSuccessCode) {
+
+        HttpClient httpClient = HttpClient.newHttpClient();
+
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(url))
+                    .version(HttpClient.Version.HTTP_2)
+                    .header("Authorization", APIUtil.getBasicAuthenticationHeader(alfrescoRestApi.getUser(), alfrescoRestApi.getPassword()))
+                    .header("Accept", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(inputBody.toJSON().toString()))
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() != httpSuccessCode) {
+                JSONObject responseJson = new JSONObject(response.body());
+                JSONObject error = responseJson.getJSONObject("error");
+                return ResponseEither.error(new Error(response.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
+            }
+
+            JSONObject responseObj = new JSONObject(response.body());
+            return ResponseEither.data(responseObj);
+        } catch (Exception e) {
+            return ResponseEither.error(new Error(500, "Internal server error", e.getMessage()));
+        }
     }
 
     public ResponseEither<Error, JSONObject> getListNodeChildren(String nodeId) {
@@ -61,7 +101,7 @@ public class NodesApi {
 
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI(urlChildrenWithTicket))
+                    .uri(new URI(urlChildren))
                     .version(HttpClient.Version.HTTP_2)
                     .header("Authorization", APIUtil.getBasicAuthenticationHeader(alfrescoRestApi.getUser(), alfrescoRestApi.getPassword()))
                     .header("Accept", "application/json")
