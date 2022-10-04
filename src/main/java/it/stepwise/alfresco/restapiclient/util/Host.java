@@ -1,10 +1,13 @@
 package it.stepwise.alfresco.restapiclient.util;
 
 public class Host {
+
     private String hostURL;
+
     public Host(String protocol, String domain, int port) {
-        this.hostURL = protocol + "://" + domain + port;
+        this.hostURL = protocol + "://" + domain + ":" + port;
     }
+
     public Host(String protocol, String domain) {
         this.hostURL = protocol + "://" + domain;
     }
@@ -12,4 +15,5 @@ public class Host {
     public String getHostURL() {
         return hostURL;
     }
+    
 }
