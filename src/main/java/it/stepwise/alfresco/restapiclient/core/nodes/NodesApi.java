@@ -32,9 +32,18 @@ public class NodesApi {
         this.numVersion = numVersion;
     }
 
-    public ResponseEither<Error, JSONObject> createNode(String nodeId, JSONObject jsonCreateNode) {
+    public ResponseEither<Error, JSONObject> createNode(String nodeId, boolean autoRename, NodeBodyCreate nodeBodyCreate, /*TODO: insert fields*/Include... include) {
         String url = buildNodeUrl(nodeId);
-        return null;
+
+        String urlCreateAutoRename =
+                APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/children") + "?" + "autoRename=" + false;
+
+        String urlCreateInclude =
+                include.length != 0 ?
+                        APIUtil.composeURL(urlCreateAutoRename, (urlComposed) -> urlComposed + "/children") + "?" + "include=" + Stream.of(include).map(incl -> incl.value).collect(Collectors.joining(",")) :
+                        APIUtil.composeURL(urlCreateAutoRename, (urlComposed) -> urlComposed + "/children");
+
+        return HttpPost(urlCreateInclude, nodeBodyCreate, 201);
     }
 
     public ResponseEither<Error, JSONObject> deleteNode(String nodeId, boolean permanent) {
