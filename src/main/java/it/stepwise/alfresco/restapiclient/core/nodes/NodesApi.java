@@ -108,15 +108,15 @@ public class NodesApi {
         return HttpPost(urlMove, nodeBodyMove, 200);
     }
 
-    public ResponseEither<Error, JSONObject> copyNode(String nodeId, NodeBodyCopy nodeBodyMove, /*TODO: insert fields*/Include... include) {
+    public ResponseEither<Error, JSONObject> copyNode(String nodeId, NodeBodyCopy nodeBodyCopy, /*TODO: insert fields*/Include... include) {
         String url = buildNodeUrl(nodeId);
 
-        String urlMove =
+        String urlCopy =
                 include.length != 0 ?
                         APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/copy") + "?" + "include=" + Stream.of(include).map(incl -> incl.value).collect(Collectors.joining(",")) :
                         APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/copy");
 
-        return HttpPost(urlMove, nodeBodyMove, 201);
+        return HttpPost(urlCopy, nodeBodyCopy, 201);
     }
 
     /**
