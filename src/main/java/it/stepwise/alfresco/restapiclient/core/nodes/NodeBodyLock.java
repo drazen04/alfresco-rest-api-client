@@ -15,24 +15,12 @@ public class NodeBodyLock extends InputBody {
 
 
     public enum Type{
-        ALLOW_OWNER_CHANGES("ALLOW_OWNER_CHANGES"),
-        FULL("FULL");
-
-        public final String value;
-
-        private Type(String value) {
-            this.value = value;
-        }
+        ALLOW_OWNER_CHANGES,
+        FULL
     }
 
     public enum Lifetime {
-        EPHEMERAL("EPHEMERAL"),
-        PERSISTENT("PERSISTENT");
-
-        public final String value;
-
-        private Lifetime(String value) {
-            this.value = value;
-        }
+        EPHEMERAL,
+        PERSISTENT
     }
 }
