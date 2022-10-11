@@ -55,6 +55,17 @@ public class NodesApi {
         return HttpDelete(urlDelete, 204);
     }
 
+    public ResponseEither<Error, JSONObject> deleteNodeAssociation(String nodeId, String targetId, String assocType) {
+        String url = buildNodeUrl(nodeId);
+
+        String urlDeleteNodeAssociation =
+            (assocType == null || assocType.equals("")) ?
+                APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/targets/" + targetId) :
+                APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/targets/" + targetId + "?" + "assocType=" + assocType);
+
+        return HttpDelete(urlDeleteNodeAssociation, 204);
+    }
+
     public ResponseEither<Error, JSONObject> createNode(String nodeId, NodeBodyCreate nodeBodyCreate, /*TODO: insert fields*/Include... include) {
 
         return createNode(nodeId, false, nodeBodyCreate, include);
