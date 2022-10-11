@@ -244,19 +244,6 @@ public class NodesApi {
 
     }
 
-    // TODO: Possibile enum per il body di lock node
-//    public enum LifetimeEnum {
-//        PERSISTENT("PERSISTENT"),
-//
-//        EPHEMERAL("EPHEMERAL");
-//
-//        private String value;
-//
-//        LifetimeEnum(String value) {
-//            this.value = value;
-//        }
-//    }
-
     private String buildNodeUrl(String nodeId) {
         return APIUtil.composeURL(
                 BASE_URL_CORE_NODES_API,
