@@ -37,7 +37,21 @@ public class NodesApi {
         return null;
     }
 
-    public ResponseEither<Error, JSONObject> updateNode(String nodeId, JSONObject jsonBodyUpdate) {
+    public ResponseEither<Error, JSONObject> deleteNode(String nodeId, boolean permanent) {
+        String url = buildNodeUrl(nodeId);
+
+        String urlDelete =
+                APIUtil.composeURL(url, (urlComposed) -> urlComposed + "?" + "permanent=" + false);
+
+        return HttpDelete(urlDelete, 204);
+    }
+
+    public ResponseEither<Error, JSONObject> createNode(String nodeId, NodeBodyCreate nodeBodyCreate, /*TODO: insert fields*/Include... include) {
+
+        return createNode(nodeId, false, nodeBodyCreate, include);
+    }
+
+    public ResponseEither<Error, JSONObject> updateNode(String nodeId, JSONObject jsonBodyUpdate, /*TODO: insert fields*/Include... include) {
         String url = buildNodeUrl(nodeId);
         return null;
     }
@@ -101,6 +115,33 @@ public class NodesApi {
             }
 
             JSONObject responseObj = new JSONObject(response.body());
+            return ResponseEither.data(responseObj);
+        } catch (Exception e) {
+            return ResponseEither.error(new Error(500, "Internal server error", e.getMessage()));
+        }
+    }
+
+    public ResponseEither<Error, JSONObject> HttpDelete(String url, int httpSuccessCode) {
+
+        HttpClient httpClient = HttpClient.newHttpClient();
+
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(url))
+                    .version(HttpClient.Version.HTTP_2)
+                    .header("Authorization", APIUtil.getBasicAuthenticationHeader(alfrescoRestApi.getUser(), alfrescoRestApi.getPassword()))
+                    .DELETE()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() != httpSuccessCode) {
+                JSONObject responseJson = new JSONObject(response.body());
+                JSONObject error = responseJson.getJSONObject("error");
+                return ResponseEither.error(new Error(response.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
+            }
+
+            JSONObject responseObj = new JSONObject();
             return ResponseEither.data(responseObj);
         } catch (Exception e) {
             return ResponseEither.error(new Error(500, "Internal server error", e.getMessage()));
