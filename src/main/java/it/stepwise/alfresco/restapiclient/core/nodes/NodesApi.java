@@ -72,6 +72,7 @@ public class NodesApi {
                 include.length != 0 ?
                         APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/lock") + "?" + "include=" + Stream.of(include).map(incl -> incl.value).collect(Collectors.joining(",")) :
                         APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/lock");
+
         return HttpPost(urlLock, nodeBodyLock, 200);
     }
 
@@ -94,6 +95,17 @@ public class NodesApi {
                         APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/move");
 
         return HttpPost(urlMove, nodeBodyMove, 200);
+    }
+
+    public ResponseEither<Error, JSONObject> copyNode(String nodeId, NodeBodyCopy nodeBodyMove, /*TODO: insert fields*/Include... include) {
+        String url = buildNodeUrl(nodeId);
+
+        String urlMove =
+                include.length != 0 ?
+                        APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/copy") + "?" + "include=" + Stream.of(include).map(incl -> incl.value).collect(Collectors.joining(",")) :
+                        APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/copy");
+
+        return HttpPost(urlMove, nodeBodyMove, 201);
     }
 
     /**
