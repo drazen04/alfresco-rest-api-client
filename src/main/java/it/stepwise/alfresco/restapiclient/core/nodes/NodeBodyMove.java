@@ -11,8 +11,7 @@ public class NodeBodyMove extends InputBody {
         this.targetParentId = targetParentId;
     }
 
-    public NodeBodyMove(String targetParentId, String name) {
-        this.targetParentId = targetParentId;
+    public void setName(String name) {
         this.name = name;
     }
 
