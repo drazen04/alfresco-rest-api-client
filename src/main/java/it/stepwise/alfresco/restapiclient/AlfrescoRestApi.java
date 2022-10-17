@@ -11,6 +11,13 @@ public class AlfrescoRestApi {
 
     private final String user;
     private final String password;
+    
+    public AlfrescoRestApi(Host host, String user, String password) {
+        this.host = host;
+        this.numVersion = 1;
+        this.user = user;
+        this.password = password;
+    }
 
     public AlfrescoRestApi(Host host, int numVersion, String user, String password) {
         this.host = host;
@@ -18,7 +25,6 @@ public class AlfrescoRestApi {
         this.user = user;
         this.password = password;
     }
-
 
     public Host getHost() {
         return host;
@@ -35,6 +41,7 @@ public class AlfrescoRestApi {
     public String getPassword() {
         return password;
     }
+
 }
 
 /*
