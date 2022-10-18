@@ -4,11 +4,11 @@ import it.stepwise.alfresco.restapiclient.InputBody;
 import org.json.JSONObject;
 
 public class NodeBodyCreate extends InputBody {
+
     private String name;
     private String nodeType;
     private String relativePath;
     private JSONObject properties;
-
 
     public NodeBodyCreate(String name, String nodeType) {
         this.name = name;
@@ -30,4 +30,15 @@ public class NodeBodyCreate extends InputBody {
     public void setProperties(JSONObject properties) {
         this.properties = properties;
     }
+
+    @Override
+    public String toString() {
+        return "NodeBodyCreate{" +
+                "name='" + name + '\'' +
+                ", nodeType='" + nodeType + '\'' +
+                ", relativePath='" + relativePath + '\'' +
+                ", properties='" + properties + '\'' +
+                '}';
+    }
+
 }

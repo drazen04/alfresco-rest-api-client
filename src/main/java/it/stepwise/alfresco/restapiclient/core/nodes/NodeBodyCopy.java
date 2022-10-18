@@ -22,4 +22,5 @@ public class NodeBodyCopy extends InputBody {
                 ", name='" + name + '\'' +
                 '}';
     }
+
 }

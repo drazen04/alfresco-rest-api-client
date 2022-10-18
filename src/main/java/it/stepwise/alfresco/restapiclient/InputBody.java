@@ -17,4 +17,5 @@ public abstract class InputBody {
         }
         return jsonObject;
     }
+
 }
