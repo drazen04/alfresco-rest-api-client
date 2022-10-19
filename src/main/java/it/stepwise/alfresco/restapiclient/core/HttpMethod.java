@@ -28,14 +28,14 @@ import it.stepwise.alfresco.restapiclient.util.ResponseEither;
  */
 public class HttpMethod implements HttpMethodInterface {
 
-    public AlfrescoRestApi alfrescoRestApi;
+    private final AlfrescoRestApi alfrescoRestApi;
 
     public HttpMethod(AlfrescoRestApi alfrescoRestApi) {
         this.alfrescoRestApi = alfrescoRestApi;
     }
 
     @Override
-    public ResponseEither<Error, JSONObject> HttpPost(String url, InputBody inputBody, int httpSuccessCode) {
+    public ResponseEither<Error, JSONObject> post(String url, InputBody inputBody, int httpSuccessCode) {
 
         HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -73,7 +73,7 @@ public class HttpMethod implements HttpMethodInterface {
     }
 
     @Override
-    public ResponseEither<Error, JSONObject> HttpDelete(String url, int httpSuccessCode, AlfrescoRestApi alfrescoRestApi) {
+    public ResponseEither<Error, JSONObject> delete(String url, int httpSuccessCode, AlfrescoRestApi alfrescoRestApi) {
 
         HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -109,7 +109,7 @@ public class HttpMethod implements HttpMethodInterface {
     }
 
     @Override
-    public ResponseEither<Error, JSONObject> HttpPostWithoutBody(String url, int httpSuccessCode, AlfrescoRestApi alfrescoRestApi) {
+    public ResponseEither<Error, JSONObject> postWithoutBody(String url, int httpSuccessCode, AlfrescoRestApi alfrescoRestApi) {
 
         HttpClient httpClient = HttpClient.newHttpClient();
 
