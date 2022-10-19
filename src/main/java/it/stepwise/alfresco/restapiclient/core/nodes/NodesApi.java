@@ -39,6 +39,14 @@ public class NodesApi {
         this.httpMethod = httpMethod;
     }
 
+    public ResponseEither<Error, JSONObject> getNode(String nodeId) {
+        
+        String url = this.buildNodeUrl(nodeId);
+        
+        return this.httpMethod.get(url, 200);
+
+    }
+    
     public ResponseEither<Error, JSONObject> createNode(String nodeId, boolean autoRename, NodeBodyCreate nodeBodyCreate, /*TODO: insert fields*/Include... include) {
         String url = buildNodeUrl(nodeId);
 
@@ -162,34 +170,6 @@ public class NodesApi {
         } catch (Exception e) {
             return ResponseEither.error(new Error(500, "Internal server error", e.getMessage()));
         }
-    }
-
-    public ResponseEither<Error, JSONObject> getNode(String nodeId) {
-        String url = buildNodeUrl(nodeId);
-
-        HttpClient httpClient = HttpClient.newHttpClient();
-
-        try {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI(url))
-                    .version(HttpClient.Version.HTTP_2)
-                    .header("Authorization", APIUtil.getBasicAuthenticationHeader(alfrescoRestApi.getUser(), alfrescoRestApi.getPassword()))
-                    .header("Accept", "application/json")
-                    .GET()
-                    .build();
-
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-            JSONObject responseJson = new JSONObject(response.body());
-            if (response.statusCode() != 200) {
-                JSONObject error = responseJson.getJSONObject("error");
-                return ResponseEither.error(new Error(response.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
-            }
-            return ResponseEither.data(responseJson.getJSONObject("entry"));
-        } catch (Exception e) {
-            return ResponseEither.error(new Error(500, "Internal server error", e.getMessage()));
-        }
-
     }
 
     private String buildNodeUrl(String nodeId) {

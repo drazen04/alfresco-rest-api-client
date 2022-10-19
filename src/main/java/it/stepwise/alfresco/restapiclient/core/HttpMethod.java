@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import it.stepwise.alfresco.restapiclient.AlfrescoRestApi;
 import it.stepwise.alfresco.restapiclient.InputBody;
+import it.stepwise.alfresco.restapiclient.common.MimetypeConstants;
 import it.stepwise.alfresco.restapiclient.util.APIUtil;
 import it.stepwise.alfresco.restapiclient.util.Error;
 import it.stepwise.alfresco.restapiclient.util.ResponseEither;
@@ -35,33 +36,69 @@ public class HttpMethod implements HttpMethodInterface {
     }
 
     @Override
+    public ResponseEither<Error, JSONObject> get(String url, int httpSuccessCode) {
+        
+        HttpClient httpClient = HttpClient.newHttpClient();
+
+        try {
+            
+            HttpRequest httpRequest = HttpRequest.newBuilder()
+                    .uri(new URI(url))
+                    .version(HttpClient.Version.HTTP_2)
+                    .header("Authorization",
+                            APIUtil.getBasicAuthenticationHeader(this.alfrescoRestApi.getUser(),
+                                    alfrescoRestApi.getPassword()))
+                    .header("Accept", MimetypeConstants.APPLICATION_JSON)
+                    .GET()
+                    .build();
+
+            HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+
+            JSONObject responseJson = new JSONObject(httpResponse.body());
+            if (httpResponse.statusCode() != httpSuccessCode) {
+                JSONObject error = responseJson.getJSONObject("error");
+                return ResponseEither.error(
+                        new Error(httpResponse.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
+            }
+            
+            return ResponseEither.data(responseJson.getJSONObject("entry"));
+            
+        } catch (Exception e) {
+            
+            return ResponseEither.error(new Error(500, "Internal server error", e.getMessage()));
+            
+        }
+        
+    }
+
+    @Override
     public ResponseEither<Error, JSONObject> post(String url, InputBody inputBody, int httpSuccessCode) {
 
         HttpClient httpClient = HttpClient.newHttpClient();
 
         try {
 
-            HttpRequest request = HttpRequest.newBuilder()
+            HttpRequest httpRequest = HttpRequest.newBuilder()
                     .uri(new URI(url))
                     .version(HttpClient.Version.HTTP_2)
                     .header("Authorization",
                             APIUtil.getBasicAuthenticationHeader(
                                     this.alfrescoRestApi.getUser(),
                                     this.alfrescoRestApi.getPassword()))
-                    .header("Accept", "application/json")
+                    .header("Accept", MimetypeConstants.APPLICATION_JSON)
                     .POST(HttpRequest.BodyPublishers.ofString(inputBody.toJSON().toString()))
                     .build();
 
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
-            if (response.statusCode() != httpSuccessCode) {
-                JSONObject responseJson = new JSONObject(response.body());
+            if (httpResponse.statusCode() != httpSuccessCode) {
+                JSONObject responseJson = new JSONObject(httpResponse.body());
                 JSONObject error = responseJson.getJSONObject("error");
                 return ResponseEither.error(
-                        new Error(response.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
+                        new Error(httpResponse.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
             }
 
-            JSONObject responseObj = new JSONObject(response.body());
+            JSONObject responseObj = new JSONObject(httpResponse.body());
             return ResponseEither.data(responseObj);
 
         } catch (Exception e) {
@@ -79,22 +116,23 @@ public class HttpMethod implements HttpMethodInterface {
 
         try {
 
-            HttpRequest request = HttpRequest.newBuilder()
+            HttpRequest httpRequest = HttpRequest.newBuilder()
                     .uri(new URI(url))
                     .version(HttpClient.Version.HTTP_2)
                     .header("Authorization",
-                            APIUtil.getBasicAuthenticationHeader(alfrescoRestApi.getUser(),
-                                    alfrescoRestApi.getPassword()))
+                            APIUtil.getBasicAuthenticationHeader(
+                                    this.alfrescoRestApi.getUser(),
+                                    this.alfrescoRestApi.getPassword()))
                     .DELETE()
                     .build();
 
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
-            if (response.statusCode() != httpSuccessCode) {
-                JSONObject responseJson = new JSONObject(response.body());
+            if (httpResponse.statusCode() != httpSuccessCode) {
+                JSONObject responseJson = new JSONObject(httpResponse.body());
                 JSONObject error = responseJson.getJSONObject("error");
                 return ResponseEither.error(
-                        new Error(response.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
+                        new Error(httpResponse.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
             }
 
             JSONObject responseObj = new JSONObject();
@@ -115,26 +153,27 @@ public class HttpMethod implements HttpMethodInterface {
 
         try {
 
-            HttpRequest request = HttpRequest.newBuilder()
+            HttpRequest httpRequest = HttpRequest.newBuilder()
                     .uri(new URI(url))
                     .version(HttpClient.Version.HTTP_2)
                     .header("Authorization",
-                            APIUtil.getBasicAuthenticationHeader(alfrescoRestApi.getUser(),
-                                    alfrescoRestApi.getPassword()))
-                    .header("Accept", "application/json")
+                            APIUtil.getBasicAuthenticationHeader(
+                                    this.alfrescoRestApi.getUser(),
+                                    this.alfrescoRestApi.getPassword()))
+                    .header("Accept", MimetypeConstants.APPLICATION_JSON)
                     .POST(HttpRequest.BodyPublishers.noBody())
                     .build();
 
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
-            if (response.statusCode() != httpSuccessCode) {
-                JSONObject responseJson = new JSONObject(response.body());
+            if (httpResponse.statusCode() != httpSuccessCode) {
+                JSONObject responseJson = new JSONObject(httpResponse.body());
                 JSONObject error = responseJson.getJSONObject("error");
                 return ResponseEither.error(
-                        new Error(response.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
+                        new Error(httpResponse.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
             }
 
-            JSONObject responseObj = new JSONObject(response.body());
+            JSONObject responseObj = new JSONObject(httpResponse.body());
             return ResponseEither.data(responseObj);
 
         } catch (Exception e) {

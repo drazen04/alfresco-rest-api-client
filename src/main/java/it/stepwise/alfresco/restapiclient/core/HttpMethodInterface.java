@@ -2,7 +2,6 @@ package it.stepwise.alfresco.restapiclient.core;
 
 import org.json.JSONObject;
 
-import it.stepwise.alfresco.restapiclient.AlfrescoRestApi;
 import it.stepwise.alfresco.restapiclient.InputBody;
 import it.stepwise.alfresco.restapiclient.util.Error;
 import it.stepwise.alfresco.restapiclient.util.ResponseEither;
@@ -22,6 +21,7 @@ import it.stepwise.alfresco.restapiclient.util.ResponseEither;
  */
 public interface HttpMethodInterface {
 
+    public ResponseEither<Error, JSONObject> get(String url, int httpSuccessCode);
     public ResponseEither<Error, JSONObject> post(String url, InputBody inputBody, int httpSuccessCode);
     public ResponseEither<Error, JSONObject> delete(String url, int httpSuccessCode);
     
