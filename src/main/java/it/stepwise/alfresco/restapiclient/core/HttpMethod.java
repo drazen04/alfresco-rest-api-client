@@ -40,7 +40,7 @@ public class HttpMethod implements HttpMethodInterface {
         HttpClient httpClient = HttpClient.newHttpClient();
 
         try {
-            
+
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI(url))
                     .version(HttpClient.Version.HTTP_2)
@@ -73,7 +73,7 @@ public class HttpMethod implements HttpMethodInterface {
     }
 
     @Override
-    public ResponseEither<Error, JSONObject> delete(String url, int httpSuccessCode, AlfrescoRestApi alfrescoRestApi) {
+    public ResponseEither<Error, JSONObject> delete(String url, int httpSuccessCode) {
 
         HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -109,12 +109,12 @@ public class HttpMethod implements HttpMethodInterface {
     }
 
     @Override
-    public ResponseEither<Error, JSONObject> postWithoutBody(String url, int httpSuccessCode, AlfrescoRestApi alfrescoRestApi) {
+    public ResponseEither<Error, JSONObject> postWithoutBody(String url, int httpSuccessCode) {
 
         HttpClient httpClient = HttpClient.newHttpClient();
 
         try {
-            
+
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI(url))
                     .version(HttpClient.Version.HTTP_2)
@@ -136,13 +136,13 @@ public class HttpMethod implements HttpMethodInterface {
 
             JSONObject responseObj = new JSONObject(response.body());
             return ResponseEither.data(responseObj);
-            
+
         } catch (Exception e) {
-            
+
             return ResponseEither.error(new Error(500, "Internal server error", e.getMessage()));
-            
+
         }
-        
+
     }
 
 }
