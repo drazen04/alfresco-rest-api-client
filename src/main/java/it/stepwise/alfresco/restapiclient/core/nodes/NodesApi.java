@@ -19,19 +19,21 @@ import static it.stepwise.alfresco.restapiclient.common.Constants.*;
 
 public class NodesApi {
 
-    private final AlfrescoRestApi alfrescoRestApi;
+    public AlfrescoRestApi alfrescoRestApi;
     private final int numVersion;
 
     private HttpMethod httpMethod;
     
-    public NodesApi(AlfrescoRestApi alfrescoRestApi) {
+    public NodesApi(AlfrescoRestApi alfrescoRestApi, HttpMethod httpMethod) {
         this.alfrescoRestApi = alfrescoRestApi;
         this.numVersion = 1;
+        this.httpMethod = httpMethod;
     }
 
-    public NodesApi(AlfrescoRestApi alfrescoRestApi, int numVersion) {
+    public NodesApi(AlfrescoRestApi alfrescoRestApi, int numVersion, HttpMethod httpMethod) {
         this.alfrescoRestApi = alfrescoRestApi;
         this.numVersion = numVersion;
+        this.httpMethod = httpMethod;
     }
 
     public ResponseEither<Error, JSONObject> createNode(String nodeId, boolean autoRename, NodeBodyCreate nodeBodyCreate, /*TODO: insert fields*/Include... include) {
@@ -44,8 +46,8 @@ public class NodesApi {
                 include.length != 0 ?
                         APIUtil.composeURL(urlCreateAutoRename, (urlComposed) -> urlComposed + "/children") + "?" + "include=" + Stream.of(include).map(incl -> incl.value).collect(Collectors.joining(",")) :
                         APIUtil.composeURL(urlCreateAutoRename, (urlComposed) -> urlComposed + "/children");
-
-        return this.httpMethod.HttpPost(urlCreateInclude, nodeBodyCreate, 201, this.alfrescoRestApi);
+                
+        return this.httpMethod.HttpPost(urlCreateInclude, nodeBodyCreate, 201);
     }
 
     public ResponseEither<Error, JSONObject> deleteNode(String nodeId, boolean permanent) {
@@ -86,7 +88,7 @@ public class NodesApi {
                         APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/lock") + "?" + "include=" + Stream.of(include).map(incl -> incl.value).collect(Collectors.joining(",")) :
                         APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/lock");
 
-        return this.httpMethod.HttpPost(urlLock, nodeBodyLock, 200, this.alfrescoRestApi);
+        return this.httpMethod.HttpPost(urlLock, nodeBodyLock, 200);
     }
 
     public ResponseEither<Error, JSONObject> unlockNode(String nodeId, /*TODO: insert fields*/Include... include) {
@@ -107,7 +109,7 @@ public class NodesApi {
                         APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/move") + "?" + "include=" + Stream.of(include).map(incl -> incl.value).collect(Collectors.joining(",")) :
                         APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/move");
 
-        return this.httpMethod.HttpPost(urlMove, nodeBodyMove, 200, this.alfrescoRestApi);
+        return this.httpMethod.HttpPost(urlMove, nodeBodyMove, 200);
     }
 
     public ResponseEither<Error, JSONObject> copyNode(String nodeId, NodeBodyCopy nodeBodyCopy, /*TODO: insert fields*/Include... include) {
@@ -118,7 +120,7 @@ public class NodesApi {
                         APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/copy") + "?" + "include=" + Stream.of(include).map(incl -> incl.value).collect(Collectors.joining(",")) :
                         APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/copy");
 
-        return this.httpMethod.HttpPost(urlCopy, nodeBodyCopy, 201, this.alfrescoRestApi);
+        return this.httpMethod.HttpPost(urlCopy, nodeBodyCopy, 201);
     }
 
     /**

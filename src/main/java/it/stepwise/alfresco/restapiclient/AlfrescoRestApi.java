@@ -42,6 +42,12 @@ public class AlfrescoRestApi {
         return password;
     }
 
+    @Override
+    public String toString() {
+        return "AlfrescoRestApi [ticket=" + ticket + ", host=" + host + ", numVersion=" + numVersion + ", user=" + user
+                + ", password=" + password + "]";
+    }
+
 }
 
 /*

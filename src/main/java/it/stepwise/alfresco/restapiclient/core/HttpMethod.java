@@ -28,8 +28,14 @@ import it.stepwise.alfresco.restapiclient.util.ResponseEither;
  */
 public class HttpMethod implements HttpMethodInterface {
 
+    public AlfrescoRestApi alfrescoRestApi;
+
+    public HttpMethod(AlfrescoRestApi alfrescoRestApi) {
+        this.alfrescoRestApi = alfrescoRestApi;
+    }
+
     @Override
-    public ResponseEither<Error, JSONObject> HttpPost(String url, InputBody inputBody, int httpSuccessCode, AlfrescoRestApi alfrescoRestApi) {
+    public ResponseEither<Error, JSONObject> HttpPost(String url, InputBody inputBody, int httpSuccessCode) {
 
         HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -39,8 +45,9 @@ public class HttpMethod implements HttpMethodInterface {
                     .uri(new URI(url))
                     .version(HttpClient.Version.HTTP_2)
                     .header("Authorization",
-                            APIUtil.getBasicAuthenticationHeader(alfrescoRestApi.getUser(),
-                                    alfrescoRestApi.getPassword()))
+                            APIUtil.getBasicAuthenticationHeader(
+                                    this.alfrescoRestApi.getUser(),
+                                    this.alfrescoRestApi.getPassword()))
                     .header("Accept", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(inputBody.toJSON().toString()))
                     .build();

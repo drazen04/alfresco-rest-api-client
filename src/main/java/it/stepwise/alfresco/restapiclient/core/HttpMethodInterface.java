@@ -22,7 +22,7 @@ import it.stepwise.alfresco.restapiclient.util.ResponseEither;
  */
 public interface HttpMethodInterface {
 
-    public ResponseEither<Error, JSONObject> HttpPost(String url, InputBody inputBody, int httpSuccessCode, AlfrescoRestApi alfrescoRestApi);
+    public ResponseEither<Error, JSONObject> HttpPost(String url, InputBody inputBody, int httpSuccessCode);
     public ResponseEither<Error, JSONObject> HttpDelete(String url, int httpSuccessCode, AlfrescoRestApi alfrescoRestApi);
     
     public ResponseEither<Error, JSONObject> HttpPostWithoutBody(String url, int httpSuccessCode, AlfrescoRestApi alfrescoRestApi);
