@@ -3,6 +3,7 @@ package it.stepwise.alfresco.restapiclient.core.nodes;
 import it.stepwise.alfresco.restapiclient.InputBody;
 
 public class NodeBodyLock extends InputBody {
+
     private int timeToExpire;
     private Type type;
     private Lifetime lifetime;
@@ -13,8 +14,7 @@ public class NodeBodyLock extends InputBody {
         this.lifetime = lifeTime;
     }
 
-
-    public enum Type{
+    public enum Type {
         ALLOW_OWNER_CHANGES,
         FULL
     }
@@ -23,4 +23,5 @@ public class NodeBodyLock extends InputBody {
         EPHEMERAL,
         PERSISTENT
     }
+
 }
