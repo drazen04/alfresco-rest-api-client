@@ -17,8 +17,8 @@ import it.stepwise.alfresco.restapiclient.util.ResponseEither;
 
 public class SearchApiTest {
 
-    private Host host = new Host("https", "doc-qa-be.formatemp.it");
-    private AlfrescoRestApi alfrescoRestApi = new AlfrescoRestApi(this.host, "admin", "admin");
+    private Host host = new Host("", "");
+    private AlfrescoRestApi alfrescoRestApi = new AlfrescoRestApi(this.host, "", "");
     private SearchApi searchApi = new SearchApi(this.alfrescoRestApi);
 
     private String defaultAftsQuery = "";
@@ -149,7 +149,7 @@ public class SearchApiTest {
             .NOT_PROP("", "")
             .AND()
             .SITE("");
-            
+
         Query query = new Query(fts.getQuery());
         searchBody.setQuery(query);
 
