@@ -14,7 +14,9 @@ public enum Include {
     @JsonProperty("path")
     PATH("path"),
     @JsonProperty("properties")
-    PROPERTIES("properties");
+    PROPERTIES("properties"),
+    @JsonProperty("association")
+    ASSOCIATION("association");
 
     public final String value;
 

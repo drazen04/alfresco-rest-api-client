@@ -1,6 +1,7 @@
 package it.stepwise.alfresco.restapiclient.search;
 
 import it.stepwise.alfresco.restapiclient.InputBody;
+import it.stepwise.alfresco.restapiclient.search.searchparams.Fields;
 import it.stepwise.alfresco.restapiclient.search.searchparams.Include;
 import it.stepwise.alfresco.restapiclient.search.searchparams.Paging;
 import it.stepwise.alfresco.restapiclient.search.searchparams.Query;
@@ -12,7 +13,7 @@ public class SearchBody extends InputBody {
     private Paging paging;
     private Include[] include;
     // private Boolean includeRequest;
-    // private Fields fields;
+    private Fields[] fields;
     private Sort[] sort;
     // private Templates templates;
     // private Defaults defaults;
@@ -38,6 +39,9 @@ public class SearchBody extends InputBody {
     public Include[] getInclude() {
         return include;
     }
+    public Fields[] getFields() {
+        return fields;
+    }
     public Sort[] getSort() {
         return sort;
     }
@@ -52,6 +56,9 @@ public class SearchBody extends InputBody {
     }
     public void setSort(Sort[] sort) {
         this.sort = sort;
+    }
+    public void setFields(Fields[] fields) {
+        this.fields = fields;
     }
 
 }
