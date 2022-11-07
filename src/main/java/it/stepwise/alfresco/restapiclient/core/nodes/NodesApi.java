@@ -15,7 +15,7 @@ import org.json.JSONObject;
 
 import it.stepwise.alfresco.restapiclient.AlfrescoRestApi;
 import it.stepwise.alfresco.restapiclient.core.HttpMethod;
-import it.stepwise.alfresco.restapiclient.queryparams.Include;
+import it.stepwise.alfresco.restapiclient.core.nodes.nodesparams.Include;
 import it.stepwise.alfresco.restapiclient.util.APIUtil;
 import it.stepwise.alfresco.restapiclient.util.Error;
 import it.stepwise.alfresco.restapiclient.util.ResponseEither;

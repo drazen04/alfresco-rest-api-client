@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import it.stepwise.alfresco.restapiclient.AlfrescoRestApi;
 import it.stepwise.alfresco.restapiclient.core.HttpMethod;
-import it.stepwise.alfresco.restapiclient.queryparams.Include;
+import it.stepwise.alfresco.restapiclient.core.nodes.nodesparams.Include;
 import it.stepwise.alfresco.restapiclient.util.Host;
 import it.stepwise.alfresco.restapiclient.util.ResponseEither;
 
