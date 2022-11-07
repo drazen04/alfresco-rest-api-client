@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import it.stepwise.alfresco.restapiclient.AlfrescoRestApi;
+import it.stepwise.alfresco.restapiclient.search.querybuilder.Fts;
 import it.stepwise.alfresco.restapiclient.search.searchparams.Include;
 import it.stepwise.alfresco.restapiclient.search.searchparams.Language;
 import it.stepwise.alfresco.restapiclient.search.searchparams.Paging;
@@ -16,8 +17,8 @@ import it.stepwise.alfresco.restapiclient.util.ResponseEither;
 
 public class SearchApiTest {
 
-    private Host host = new Host("", "");
-    private AlfrescoRestApi alfrescoRestApi = new AlfrescoRestApi(this.host, "", "");
+    private Host host = new Host("https", "doc-qa-be.formatemp.it");
+    private AlfrescoRestApi alfrescoRestApi = new AlfrescoRestApi(this.host, "admin", "admin");
     private SearchApi searchApi = new SearchApi(this.alfrescoRestApi);
 
     private String defaultAftsQuery = "";
@@ -130,6 +131,27 @@ public class SearchApiTest {
         searchBody.setSort(sort);
         Paging paging = new Paging(10, 5);
         searchBody.setPaging(paging);
+
+        ResponseEither<it.stepwise.alfresco.restapiclient.util.Error, JSONObject> responseEither = this.searchApi.search(
+            searchBody);
+
+        System.out.println(responseEither.getData());
+
+    }
+
+    @Test
+    public void t7_searchAFTSQueryBuilder() throws JsonProcessingException {
+
+        SearchBody searchBody = new SearchBody();
+        Fts fts = Fts.ftsBuilder()
+            .EXACTTYPE("")
+            .AND()
+            .NOT_PROP("", "")
+            .AND()
+            .SITE("");
+            
+        Query query = new Query(fts.getQuery());
+        searchBody.setQuery(query);
 
         ResponseEither<it.stepwise.alfresco.restapiclient.util.Error, JSONObject> responseEither = this.searchApi.search(
             searchBody);
