@@ -4,10 +4,6 @@ import static it.stepwise.alfresco.restapiclient.common.Constants.BASE_URL_CORE_
 import static it.stepwise.alfresco.restapiclient.common.Constants.NODE_ID_PLACEHOLDER;
 import static it.stepwise.alfresco.restapiclient.common.Constants.NUM_VERSION_PLACEHOLDER;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -39,12 +35,78 @@ public class NodesApi {
         this.httpMethod = httpMethod;
     }
 
+    /**
+     * Get a node
+     * [GET]
+     * 
+     * @param nodeId
+     * @return
+     */
     public ResponseEither<Error, JSONObject> getNode(String nodeId) {
-        
         String url = this.buildNodeUrl(nodeId);
         
         return this.httpMethod.get(url, 200);
+    }
 
+    /**
+     * Update a node
+     * [PUT]
+     * 
+     * @param nodeId
+     * @param jsonBodyUpdate
+     * @param include
+     * @return
+     */
+    public ResponseEither<Error, JSONObject> updateNode(String nodeId, JSONObject jsonBodyUpdate, /*TODO: insert fields*/Include... include) {
+        String url = buildNodeUrl(nodeId);
+        return null;
+    }
+
+    /**
+     * Delete a node
+     * [DELETE]
+     * 
+     * @param nodeId
+     * @param permanent
+     * @return
+     */
+    public ResponseEither<Error, JSONObject> deleteNode(String nodeId, boolean permanent) {
+        String url = buildNodeUrl(nodeId);
+
+        String urlDelete =
+            APIUtil.composeURL(url, (urlComposed) -> urlComposed + "?" + "permanent=" + false);
+
+        return this.httpMethod.delete(urlDelete, 204);
+    }
+
+    /**
+     * List node children
+     * [GET]
+     * 
+     * TODO: make interface for HTTP Method
+     * @param nodeId
+     * @return
+     */
+    public ResponseEither<Error, JSONObject> getListNodeChildren(String nodeId) {
+        String url = buildNodeUrl(nodeId);
+
+        String urlChildren =  APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/children");
+
+        return this.httpMethod.get(urlChildren, 200);
+    }
+
+    /**
+     * Create a node
+     * [POST]
+     * 
+     * @param nodeId
+     * @param nodeBodyCreate
+     * @param include
+     * @return
+     */
+    public ResponseEither<Error, JSONObject> createNode(String nodeId, NodeBodyCreate nodeBodyCreate, /*TODO: insert fields*/Include... include) {
+
+        return createNode(nodeId, false, nodeBodyCreate, include);
     }
     
     public ResponseEither<Error, JSONObject> createNode(String nodeId, boolean autoRename, NodeBodyCreate nodeBodyCreate, /*TODO: insert fields*/Include... include) {
@@ -61,36 +123,35 @@ public class NodesApi {
         return this.httpMethod.post(urlCreateInclude, nodeBodyCreate, 201);
     }
 
-    public ResponseEither<Error, JSONObject> deleteNode(String nodeId, boolean permanent) {
+    /**
+     * Copy a node
+     * [POST]
+     * 
+     * @param nodeId
+     * @param nodeBodyCopy
+     * @param include
+     * @return
+     */
+    public ResponseEither<Error, JSONObject> copyNode(String nodeId, NodeBodyCopy nodeBodyCopy, /*TODO: insert fields*/Include... include) {
         String url = buildNodeUrl(nodeId);
 
-        String urlDelete =
-                APIUtil.composeURL(url, (urlComposed) -> urlComposed + "?" + "permanent=" + false);
+        String urlCopy =
+                include.length != 0 ?
+                        APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/copy") + "?" + "include=" + Stream.of(include).map(incl -> incl.value).collect(Collectors.joining(",")) :
+                        APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/copy");
 
-        return this.httpMethod.delete(urlDelete, 204);
+        return this.httpMethod.post(urlCopy, nodeBodyCopy, 201);
     }
 
-    public ResponseEither<Error, JSONObject> deleteNodeAssociation(String nodeId, String targetId, String assocType) {
-        String url = buildNodeUrl(nodeId);
-
-        String urlDeleteNodeAssociation =
-            (assocType == null || assocType.equals("")) ?
-                APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/targets/" + targetId) :
-                APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/targets/" + targetId + "?" + "assocType=" + assocType);
-
-        return this.httpMethod.delete(urlDeleteNodeAssociation, 204);
-    }
-
-    public ResponseEither<Error, JSONObject> createNode(String nodeId, NodeBodyCreate nodeBodyCreate, /*TODO: insert fields*/Include... include) {
-
-        return createNode(nodeId, false, nodeBodyCreate, include);
-    }
-
-    public ResponseEither<Error, JSONObject> updateNode(String nodeId, JSONObject jsonBodyUpdate, /*TODO: insert fields*/Include... include) {
-        String url = buildNodeUrl(nodeId);
-        return null;
-    }
-
+    /**
+     * Lock a node
+     * [POST]
+     * 
+     * @param nodeId
+     * @param nodeBodyLock
+     * @param include
+     * @return
+     */
     public ResponseEither<Error, JSONObject> lockNode(String nodeId, NodeBodyLock nodeBodyLock, /*TODO: insert fields*/Include... include) {
         String url = buildNodeUrl(nodeId);
 
@@ -102,6 +163,14 @@ public class NodesApi {
         return this.httpMethod.post(urlLock, nodeBodyLock, 200);
     }
 
+    /**
+     * Unlock a node
+     * [POST]
+     * 
+     * @param nodeId
+     * @param include
+     * @return
+     */
     public ResponseEither<Error, JSONObject> unlockNode(String nodeId, /*TODO: insert fields*/Include... include) {
         String url = buildNodeUrl(nodeId);
 
@@ -113,6 +182,15 @@ public class NodesApi {
         return this.httpMethod.postWithoutBody(urlLock, 200);
     }
 
+    /**
+     * Move a node
+     * [POST]
+     * 
+     * @param nodeId
+     * @param nodeBodyMove
+     * @param include
+     * @return
+     */
     public ResponseEither<Error, JSONObject> moveNode(String nodeId, NodeBodyMove nodeBodyMove, Include... include) {
         String url = buildNodeUrl(nodeId);
 
@@ -124,30 +202,24 @@ public class NodesApi {
         return this.httpMethod.post(urlMove, nodeBodyMove, 200);
     }
 
-    public ResponseEither<Error, JSONObject> copyNode(String nodeId, NodeBodyCopy nodeBodyCopy, /*TODO: insert fields*/Include... include) {
-        String url = buildNodeUrl(nodeId);
-
-        String urlCopy =
-                include.length != 0 ?
-                        APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/copy") + "?" + "include=" + Stream.of(include).map(incl -> incl.value).collect(Collectors.joining(",")) :
-                        APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/copy");
-
-        return this.httpMethod.post(urlCopy, nodeBodyCopy, 201);
-    }
-    
     /**
-     * List node children
+     * Delete node association(s)
+     * [DELETE]
      * 
-     * TODO: make interface for HTTP Method
      * @param nodeId
+     * @param targetId
+     * @param assocType
      * @return
      */
-    public ResponseEither<Error, JSONObject> getListNodeChildren(String nodeId) {
+    public ResponseEither<Error, JSONObject> deleteNodeAssociation(String nodeId, String targetId, String assocType) {
         String url = buildNodeUrl(nodeId);
 
-        String urlChildren =  APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/children");
+        String urlDeleteNodeAssociation =
+            (assocType == null || assocType.equals("")) ?
+                APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/targets/" + targetId) :
+                APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/targets/" + targetId + "?" + "assocType=" + assocType);
 
-        return this.httpMethod.get(urlChildren, 200);
+        return this.httpMethod.delete(urlDeleteNodeAssociation, 204);
     }
 
     private String buildNodeUrl(String nodeId) {
