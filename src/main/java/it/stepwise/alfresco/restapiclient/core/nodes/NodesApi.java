@@ -53,13 +53,19 @@ public class NodesApi {
      * [PUT]
      * 
      * @param nodeId
-     * @param jsonBodyUpdate
+     * @param nodeBodyUpdate
      * @param include
      * @return
      */
-    public ResponseEither<Error, JSONObject> updateNode(String nodeId, JSONObject jsonBodyUpdate, /*TODO: insert fields*/Include... include) {
+    public ResponseEither<Error, JSONObject> updateNode(String nodeId, NodeBodyUpdate nodeBodyUpdate, /*TODO: insert fields*/Include... include) {
         String url = buildNodeUrl(nodeId);
-        return null;
+
+        String urlUpdate =
+            include.length != 0 ?
+                APIUtil.composeURL(url) + "?" + "include=" + Stream.of(include).map(incl -> incl.value).collect(Collectors.joining(",")) :
+                url;
+
+        return this.httpMethod.put(urlUpdate, nodeBodyUpdate, 200);
     }
 
     /**
@@ -90,7 +96,7 @@ public class NodesApi {
     public ResponseEither<Error, JSONObject> getListNodeChildren(String nodeId) {
         String url = buildNodeUrl(nodeId);
 
-        String urlChildren =  APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/children");
+        String urlChildren = APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/children");
 
         return this.httpMethod.get(urlChildren, 200);
     }
@@ -203,6 +209,45 @@ public class NodesApi {
     }
 
     /**
+     * Get node content
+     * [GET]
+     * 
+     * @param nodeId
+     * @return
+     */
+    public ResponseEither<Error, JSONObject> getNodeContent(String nodeId) {
+        String url = buildNodeUrl(nodeId);
+    
+        String urlContent = APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/content");
+    
+        return this.httpMethod.get(urlContent, 200);
+    }
+
+    /**
+     * Update node content
+     * [PUT]
+     * 
+     * @param nodeId
+     * @param contentBodyUpdate
+     * @param include
+     * @return
+     */
+    public ResponseEither<Error, JSONObject> updateNodeContent(String nodeId, String contentBodyUpdate, /*TODO: insert fields*/Include... include) {
+        String url = buildNodeUrl(nodeId);
+
+        String urlContent = APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/content");
+
+        return null;
+    }
+
+    // missing: createSecondaryChild
+    // missing: listSecondaryChild
+    // missing: deleteSecondaryChildOrChildren
+    // missing: listParents
+    // missing: createNodeAssociation
+    // missing: listTargetAssociations
+
+    /**
      * Delete node association(s)
      * [DELETE]
      * 
@@ -222,6 +267,14 @@ public class NodesApi {
         return this.httpMethod.delete(urlDeleteNodeAssociation, 204);
     }
 
+    // missing: listSourceAssociations
+
+    /**
+     * buildNodeUrl
+     * 
+     * @param nodeId
+     * @return
+     */
     private String buildNodeUrl(String nodeId) {
         return APIUtil.composeURL(
                 BASE_URL_CORE_NODES_API,
