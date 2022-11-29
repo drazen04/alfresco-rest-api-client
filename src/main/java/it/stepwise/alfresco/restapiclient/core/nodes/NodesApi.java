@@ -134,11 +134,12 @@ public class NodesApi {
 
         return this.httpMethod.post(urlCopy, nodeBodyCopy, 201);
     }
-
+    
     /**
+     * List node children
+     * 
      * TODO: make interface for HTTP Method
-     * @param url
-     * @param inputBody
+     * @param nodeId
      * @return
      */
     public ResponseEither<Error, JSONObject> getListNodeChildren(String nodeId) {
@@ -146,30 +147,7 @@ public class NodesApi {
 
         String urlChildren =  APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/children");
 
-        HttpClient httpClient = HttpClient.newHttpClient();
-
-        try {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI(urlChildren))
-                    .version(HttpClient.Version.HTTP_2)
-                    .header("Authorization", APIUtil.getBasicAuthenticationHeader(alfrescoRestApi.getUser(), alfrescoRestApi.getPassword()))
-                    .header("Accept", "application/json")
-                    .GET()
-                    .build();
-
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() != 200) {
-                JSONObject responseJson = new JSONObject(response.body());
-                JSONObject error = responseJson.getJSONObject("error");
-                return ResponseEither.error(new Error(response.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
-            }
-
-            JSONObject responseArray = new JSONObject(response.body());
-            return ResponseEither.data(responseArray);
-        } catch (Exception e) {
-            return ResponseEither.error(new Error(500, "Internal server error", e.getMessage()));
-        }
+        return this.httpMethod.get(urlChildren, 200);
     }
 
     private String buildNodeUrl(String nodeId) {
