@@ -371,7 +371,7 @@ public class Fts implements QueryBuilder {
 	}
 
     @Override
-	public String getQuery() {
+	public String buildQuery() {
 		return this.query.trim();
 	}
     
