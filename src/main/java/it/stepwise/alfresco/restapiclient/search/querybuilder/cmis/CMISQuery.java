@@ -1,5 +1,6 @@
 package it.stepwise.alfresco.restapiclient.search.querybuilder.cmis;
 
+import it.stepwise.alfresco.restapiclient.search.querybuilder.cmis.bean.JoinStatementBean;
 import it.stepwise.alfresco.restapiclient.search.querybuilder.cmis.bean.Pair;
 import org.apache.commons.lang3.StringUtils;
 
@@ -22,7 +23,7 @@ public class CMISQuery {
 
     private Map<String, String> selectStatement = new HashMap<String, String>();
     private Pair<String, String> fromStatement = new Pair<String, String>(StringUtils.EMPTY, StringUtils.EMPTY);
-    private Pair<Pair<String, String>, String> joinStatement = new Pair<Pair<String,String>, String>(null, StringUtils.EMPTY);
+    private JoinStatementBean joinStatement = new JoinStatementBean();
     private Pair<String, String> joinObjectId = new Pair<String, String>(StringUtils.EMPTY, StringUtils.EMPTY);
     private String whereStatement = StringUtils.EMPTY;
 
@@ -47,11 +48,11 @@ public class CMISQuery {
         this.fromStatement = fromStatement;
     }
 
-    public Pair<Pair<String,String>, String> getJoinStatement() {
+    public JoinStatementBean getJoinStatement() {
         return joinStatement;
     }
 
-    public void setJoinStatement(Pair<Pair<String,String>, String> joinStatement) {
+    public void setJoinStatement(JoinStatementBean joinStatement) {
         this.joinStatement = joinStatement;
     }
 
