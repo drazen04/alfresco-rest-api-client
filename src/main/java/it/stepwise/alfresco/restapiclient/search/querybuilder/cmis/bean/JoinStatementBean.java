@@ -1,9 +1,8 @@
 package it.stepwise.alfresco.restapiclient.search.querybuilder.cmis.bean;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
+
+import it.stepwise.alfresco.restapiclient.search.querybuilder.cmis.entity.DBComp;
 
 /**
  * 
@@ -19,22 +18,35 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class JoinStatementBean {
 
-	public Map<String, String> join = new HashMap<String, String>();
+	public DBComp join = null;
 	public String columnJoin = StringUtils.EMPTY;
 
 	public JoinStatementBean() {
 	}
 	
-	public JoinStatementBean(Map<String, String> join, String columnJoin) {
+	public JoinStatementBean(DBComp join, String columnJoin) {
 		this.join = join;
 		this.columnJoin = columnJoin;
 	}
 
-	public Map<String, String> getJoin() {
+	public static JoinStatementBean composeJoinBean(DBComp join, String column) {
+		DBComp dbComp = new DBComp(join.getKey(), join.getAlias());
+    	return new JoinStatementBean(dbComp, column);
+	}
+	
+	public static String getKeyAsAliasIfExist(DBComp join) {
+		return StringUtils.isNotBlank(join.getKeyAsAlias()) ? join.getKeyAsAlias() : join.getKey();
+	}
+	
+	public static String getAliasIfExist(DBComp join) {
+		return StringUtils.isNotBlank(join.getAlias()) ? join.getAlias() : join.getKey();
+	}
+
+	public DBComp getJoin() {
 		return join;
 	}
 
-	public void setJoin(Map<String, String> join) {
+	public void setJoin(DBComp join) {
 		this.join = join;
 	}
 
@@ -48,7 +60,7 @@ public class JoinStatementBean {
 
 	@Override
 	public String toString() {
-		return "JoinStatementBean [join=" + this.join + ", columnJoin=" + this.columnJoin + "]";
+		return "JoinStatementBean [join=" + this.join.toString() + ", columnJoin=" + this.columnJoin + "]";
 	}
 
 }

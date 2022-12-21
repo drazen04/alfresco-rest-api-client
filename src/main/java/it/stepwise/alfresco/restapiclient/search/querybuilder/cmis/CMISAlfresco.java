@@ -1,6 +1,7 @@
 package it.stepwise.alfresco.restapiclient.search.querybuilder.cmis;
 
 import it.stepwise.alfresco.restapiclient.search.querybuilder.CMIS;
+import it.stepwise.alfresco.restapiclient.search.querybuilder.cmis.bean.JoinStatementBean;
 import it.stepwise.alfresco.restapiclient.search.querybuilder.cmis.constants.CMISConstant;
 import it.stepwise.alfresco.restapiclient.search.querybuilder.cmis.entity.CMISCondition;
 import it.stepwise.alfresco.restapiclient.search.querybuilder.cmis.entity.DBComp;
@@ -42,7 +43,7 @@ public class CMISAlfresco extends CMIS {
         this.cmisQuery.setSelectStatement
                 (Arrays.asList(selectFields)
                         .stream()
-                        .collect(Collectors.toMap(DBComp::getEntity, DBComp::getAlias))
+                        .collect(Collectors.toMap(DBComp::getKey, DBComp::getAlias))
                 );
 
         this.cmisQuery.setStringValue
@@ -51,9 +52,9 @@ public class CMISAlfresco extends CMIS {
                         + Arrays.asList(selectFields)
                         .stream()
                         .map(field -> StringUtils.isBlank
-                                (field.getEntityAsAlias())
-                                ? field.getEntity()
-                                : field.getEntityAsAlias()
+                                (field.getKeyAsAlias())
+                                ? field.getKey()
+                                : field.getKeyAsAlias()
                         )
                         .collect(Collectors.joining(", "))
                 );
@@ -63,11 +64,11 @@ public class CMISAlfresco extends CMIS {
 
     @Override
     public CMIS FROM(DBComp fromStatement) {
-        this.cmisQuery.setFromStatement(CMISUtil.setPairObject(fromStatement));
+        this.cmisQuery.setFromStatement(DBComp.setPairObject(fromStatement));
 
-        String entity = StringUtils.isBlank(fromStatement.getEntityAsAlias())
-                ? fromStatement.getEntity()
-                : fromStatement.getEntityAsAlias();
+        String entity = StringUtils.isBlank(fromStatement.getKeyAsAlias())
+                ? fromStatement.getKey()
+                : fromStatement.getKeyAsAlias();
 
         this.cmisQuery.setStringValue
                 (this.cmisQuery.getStringValue()
@@ -82,18 +83,18 @@ public class CMISAlfresco extends CMIS {
 
     @Override
     public CMIS JOIN(DBComp joinStatement, String columnToJoin) {
-        this.cmisQuery.setJoinStatement(CMISUtil.composeJoinBean(joinStatement, columnToJoin));
+        this.cmisQuery.setJoinStatement(JoinStatementBean.composeJoinBean(joinStatement, columnToJoin));
 
-        String entity = CMISUtil.getAlias(joinStatement);
-        String entityAsAlias = CMISUtil.getEntityAsAlias(joinStatement);
-        String fromStatement = CMISUtil.getSecondStatement(this.cmisQuery.getFromStatement());
+        String alias = JoinStatementBean.getAliasIfExist(joinStatement);
+        String entityAsAlias = JoinStatementBean.getKeyAsAliasIfExist(joinStatement);
+        String fromStatement = CMISUtil.getSecondStatementIfExist(this.cmisQuery.getFromStatement());
 
         this.cmisQuery.setStringValue
                 (this.cmisQuery.getStringValue()
                         + " "
                         + CmisToken.JOIN
                         + " "
-                        + entity
+                        + alias
                         + " "
                         + CmisToken.ON
                         + " "
@@ -111,15 +112,15 @@ public class CMISAlfresco extends CMIS {
 
     @Override
     public CMIS JOIN_OBJECTID(DBComp joinStatement) {
-        this.cmisQuery.setJoinObjectId(CMISUtil.setPairObject(joinStatement));
+        this.cmisQuery.setJoinObjectId(DBComp.setPairObject(joinStatement));
 
-        String entity = CMISUtil.getAlias(joinStatement);
-        String entityAsAlias = CMISUtil.getEntityAsAlias(joinStatement);
-        String fromStatement = CMISUtil.getSecondStatement(this.cmisQuery.getFromStatement());
+        String alias = JoinStatementBean.getAliasIfExist(joinStatement);
+        String entityAsAlias = JoinStatementBean.getKeyAsAliasIfExist(joinStatement);
+        String fromStatement = CMISUtil.getSecondStatementIfExist(this.cmisQuery.getFromStatement());
 
         this.cmisQuery.setStringValue
                 (this.cmisQuery.getStringValue()
-                		+ " "
+                	+ " "
                         + CmisToken.JOIN
                         + " "
                         + entityAsAlias
@@ -130,7 +131,7 @@ public class CMISAlfresco extends CMIS {
                         + "."
                         + CMISConstant.CMIS_OBJECT_ID
                         + Operator.EQUALS.operatorValue
-                        + entity
+                        + alias
                         + "."
                         + CMISConstant.CMIS_OBJECT_ID
                 );

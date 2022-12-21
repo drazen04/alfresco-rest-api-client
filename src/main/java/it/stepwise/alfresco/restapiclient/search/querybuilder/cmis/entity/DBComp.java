@@ -2,6 +2,8 @@ package it.stepwise.alfresco.restapiclient.search.querybuilder.cmis.entity;
 
 import org.apache.commons.lang3.StringUtils;
 
+import it.stepwise.alfresco.restapiclient.search.querybuilder.cmis.bean.Pair;
+
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -20,9 +22,9 @@ import java.util.function.Predicate;
  */
 public class DBComp {
 
-	private String entity = StringUtils.EMPTY;
+	private String key = StringUtils.EMPTY;
 	private String alias = StringUtils.EMPTY;
-	private String entityAsAlias = StringUtils.EMPTY;
+	private String keyAsAlias = StringUtils.EMPTY;
 
 	private Function<String, String> composeAliasFunction = (alias) -> alias;
 
@@ -31,33 +33,37 @@ public class DBComp {
 	private Predicate<String> selectAllPredicate = (value) -> value.equalsIgnoreCase("*");
 	private Predicate<String> notSelectAllPredicate = (value) -> !this.selectAllPredicate.test(value);
 
-	public DBComp(String entity, String alias) {
-		this.entity = entity;
+	public DBComp(String key, String alias) {
+		this.key = key;
 		this.alias = alias;
-		this.entityAsAlias = this.composeAlias();
+		this.keyAsAlias = this.composeAlias();
 	}
 
-	public DBComp(String entity) {
-		this.entity = entity;
+	public DBComp(String key) {
+		this.key = key;
 	}
 
 	public DBComp aka(String alias) {
 		this.alias = alias;
-		this.entityAsAlias = this.composeAlias();
+		this.keyAsAlias = this.composeAlias();
 		return this;
 	}
+	
+    public static Pair<String, String> setPairObject(DBComp dbComp) {
+        return new Pair<String, String>(dbComp.getKey(), dbComp.getAlias());
+    }
 
 	private String composeAlias() {
-		return this.isNotSelectAll() ? this.composeAliasFunction(this.entity, this.alias) : this.aliasFunction(this.entity);
+		return this.isNotSelectAll() ? this.composeAliasFunction(this.key, this.alias) : this.aliasFunction(this.key);
 	}
 
 	private Boolean isNotSelectAll() {
-		return this.notSelectAllPredicate.test(this.entity);
+		return this.notSelectAllPredicate.test(this.key);
 	}
 
 	@SuppressWarnings("unused")
 	private Boolean isSelectAll() {
-		return this.selectAllPredicate.test(this.entity);
+		return this.selectAllPredicate.test(this.key);
 	}
 
 	private String aliasFunction(String column) {
@@ -68,12 +74,12 @@ public class DBComp {
 		return this.composeAliasBiFunction.apply(column, value);
 	}
 
-	public String getEntity() {
-		return this.entity;
+	public String getKey() {
+		return this.key;
 	}
 
-	public void setEntity(String entity) {
-		this.entity = entity;
+	public void setKey(String key) {
+		this.key = key;
 	}
 
 	public String getAlias() {
@@ -84,12 +90,17 @@ public class DBComp {
 		this.alias = alias;
 	}
 
-	public String getEntityAsAlias() {
-		return entityAsAlias;
+	public String getKeyAsAlias() {
+		return keyAsAlias;
 	}
 
-	public void setEntityAsAlias(String entityAsAlias) {
-		this.entityAsAlias = entityAsAlias;
+	public void setKeyAsAlias(String keyAsAlias) {
+		this.keyAsAlias = keyAsAlias;
+	}
+
+	@Override
+	public String toString() {
+		return "DBComp [key=" + this.key + ", alias=" + this.alias + ", keyAsAlias=" + this.keyAsAlias + "]";
 	}
 
 }
