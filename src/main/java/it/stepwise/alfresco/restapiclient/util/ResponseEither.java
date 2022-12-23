@@ -3,10 +3,10 @@ package it.stepwise.alfresco.restapiclient.util;
 /**
  *
  *
- * @param Errore
+ * @param L
  * @param R
  */
-public class ResponseEither<Errore, R> {
+public class ResponseEither<L, R> {
 
     private final Error error;
     private final R data;
@@ -16,11 +16,11 @@ public class ResponseEither<Errore, R> {
         this.data = data;
     }
 
-    public static <Errore, R> ResponseEither<Errore, R> data(R value) {
+    public static <L, R> ResponseEither<L, R> data(R value) {
         return new ResponseEither<>(null, value);
     }
 
-    public static <Errore, R> ResponseEither<Errore, R> error(Error value) {
+    public static <L, R> ResponseEither<L, R> error(Error value) {
         return new ResponseEither<>(value, null);
     }
 
