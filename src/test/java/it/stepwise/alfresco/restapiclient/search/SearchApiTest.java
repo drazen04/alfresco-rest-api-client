@@ -11,7 +11,12 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import it.stepwise.alfresco.restapiclient.AlfrescoRestApi;
+import it.stepwise.alfresco.restapiclient.search.querybuilder.CMIS;
 import it.stepwise.alfresco.restapiclient.search.querybuilder.Fts;
+import it.stepwise.alfresco.restapiclient.search.querybuilder.cmis.entity.CMISCondition;
+import it.stepwise.alfresco.restapiclient.search.querybuilder.cmis.entity.DBComp;
+import it.stepwise.alfresco.restapiclient.search.querybuilder.cmis.enums.Operator;
+import it.stepwise.alfresco.restapiclient.search.querybuilder.cmis.enums.Type;
 import it.stepwise.alfresco.restapiclient.search.searchparams.Fields;
 import it.stepwise.alfresco.restapiclient.search.searchparams.Include;
 import it.stepwise.alfresco.restapiclient.search.searchparams.Language;
@@ -23,7 +28,7 @@ import it.stepwise.alfresco.restapiclient.util.ResponseEither;
 
 public class SearchApiTest {
 
-    private Host host = new Host("http", "localhost", 8080);
+    private Host host = new Host("https", "doc-qa.formatemp.it");
     private AlfrescoRestApi alfrescoRestApi = new AlfrescoRestApi(this.host, "admin", "admin");
     private SearchApi searchApi = new SearchApi(this.alfrescoRestApi);
 
@@ -108,7 +113,7 @@ public class SearchApiTest {
             .AND()
             .ASPECT("cm:titled");
 
-        Query query = new Query(fts.getQuery());
+        Query query = new Query(fts.buildQuery());
         searchBody.setQuery(query);
 
         assertEquals(searchBody.getQuery().getQuery(), ("EXACTTYPE:\"cm:content\" AND !cm:title:\"test.docx\" AND ASPECT:\"cm:titled\""));
@@ -169,4 +174,22 @@ public class SearchApiTest {
 
     }
     
+    @Test
+    public void t8_checkCMISQueryBuilder() throws JsonProcessingException {
+
+        SearchBody searchBody = new SearchBody();
+        CMIS cmis = CMIS.withType(Type.CMIS_ALFRESCO)
+            .SELECT(new DBComp("*"))
+            .FROM(new DBComp("cmis:document"))
+            .WHERE(new CMISCondition("cmis:name", "Test.docx", Operator.EQUALS));
+
+        Query query = new Query(Language.CMIS, cmis.buildQuery());
+        searchBody.setQuery(query);
+
+        ResponseEither<it.stepwise.alfresco.restapiclient.util.Error, JSONObject> responseEither = this.searchApi.search(searchBody);
+
+        assertEquals(responseEither.getData(), null);
+
+    }
+
 }
