@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @version 1.0.1
  * @since 1.0.0
  * @author Daniele Del Vecchio
- * @lastUpdate 2022-12-21 - Daniele Del Vecchio
+ * @lastUpdate 2022-12-27 - Daniele Del Vecchio
  */
 public class CMISAlfresco extends CMIS {
 
@@ -41,13 +41,13 @@ public class CMISAlfresco extends CMIS {
     @Override
     public CMIS SELECT(DBComp... selectFields) {
         this.cmisQuery.setSelectStatement
-                (Arrays.asList(selectFields)
+                ( Arrays.asList(selectFields)
                         .stream()
                         .collect(Collectors.toMap(DBComp::getKey, DBComp::getAlias))
                 );
 
         this.cmisQuery.setStringValue
-                (CmisToken.SELECT
+                ( CmisToken.SELECT
                         + " "
                         + Arrays.asList(selectFields)
                         .stream()
@@ -71,7 +71,7 @@ public class CMISAlfresco extends CMIS {
                 : fromStatement.getKeyAsAlias();
 
         this.cmisQuery.setStringValue
-                (this.cmisQuery.getStringValue()
+                ( this.cmisQuery.getStringValue()
                         + " "
                         + CmisToken.FROM
                         + " "
@@ -90,7 +90,7 @@ public class CMISAlfresco extends CMIS {
         String fromStatement = CMISUtil.getSecondStatementIfExist(this.cmisQuery.getFromStatement());
 
         this.cmisQuery.setStringValue
-                (this.cmisQuery.getStringValue()
+                ( this.cmisQuery.getStringValue()
                         + " "
                         + CmisToken.JOIN
                         + " "
@@ -119,7 +119,7 @@ public class CMISAlfresco extends CMIS {
         String fromStatement = CMISUtil.getSecondStatementIfExist(this.cmisQuery.getFromStatement());
 
         this.cmisQuery.setStringValue
-                (this.cmisQuery.getStringValue()
+                ( this.cmisQuery.getStringValue()
                 	+ " "
                         + CmisToken.JOIN
                         + " "
@@ -144,7 +144,7 @@ public class CMISAlfresco extends CMIS {
         this.cmisQuery.setWhereStatement(condition.getStringValue());
 
         this.cmisQuery.setStringValue
-                (this.cmisQuery.getStringValue()
+                ( this.cmisQuery.getStringValue()
                         + " "
                         + CmisToken.WHERE
                         + " "
@@ -157,7 +157,7 @@ public class CMISAlfresco extends CMIS {
     @Override
     public CMIS AND(CMISCondition andCondition) {
         this.cmisQuery.setStringValue
-                (this.cmisQuery.getStringValue()
+                ( this.cmisQuery.getStringValue()
                         + " "
                         + Conditions.AND
                         + " "
@@ -170,7 +170,7 @@ public class CMISAlfresco extends CMIS {
     @Override
     public CMIS OR(CMISCondition orCondition) {
         this.cmisQuery.setStringValue
-                (this.cmisQuery.getStringValue()
+                ( this.cmisQuery.getStringValue()
                         + " "
                         + Conditions.OR
                         + " "

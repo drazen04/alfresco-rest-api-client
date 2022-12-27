@@ -11,10 +11,10 @@ import it.stepwise.alfresco.restapiclient.search.querybuilder.cmis.bean.Pair;
  * <p>
  * </p>
  *
- * @version 1.0.0
+ * @version 1.0.1
  * @since 1.0.1
  * @author Daniele Del Vecchio
- * @lastUpdate 2022-12-21 - Daniele Del Vecchio
+ * @lastUpdate 2022-12-27 - Daniele Del Vecchio
  */
 public class CMISUtil {
 	
@@ -34,45 +34,7 @@ public class CMISUtil {
 	 * @lastUpdate 2022-12-21 - Daniele Del Vecchio
 	 */
 	public static String getSecondStatementIfExist(Pair<String, String> statement) {
-       return StringUtils.isNotBlank(getSecondPairObject(statement)) ? getSecondPairObject(statement) : getFirstPairObject(statement);
+       return StringUtils.isNotBlank(statement.getSecond()) ? statement.getSecond() : statement.getFirst();
 	}
-	
-	/**
-	 * 
-	 * <h1>getFirstPairObject</h1>
-	 *
-	 * <p>
-	 * </p>
-	 *
-	 * @param pair
-	 * @return
-	 *
-	 * @version 1.0.0
-     * @since 1.0.1
-	 * @author Daniele Del Vecchio
-	 * @lastUpdate 2022-12-21 - Daniele Del Vecchio
-	 */
-    private static String getFirstPairObject(Pair<String, String> pair) {
-        return pair.getFirst();
-    }
-
-    /**
-     * 
-     * <h1>getSecondPairObject</h1>
-     *
-     * <p>
-     * </p>
-     *
-     * @param pair
-     * @return
-     *
-     * @version 1.0.0
-     * @since 1.0.1
-     * @author Daniele Del Vecchio
-     * @lastUpdate 2022-12-21 - Daniele Del Vecchio
-     */
-    private static String getSecondPairObject(Pair<String, String> pair) {
-        return pair.getSecond();
-    }
 	
 }
