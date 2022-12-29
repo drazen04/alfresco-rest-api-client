@@ -22,9 +22,9 @@ import it.stepwise.alfresco.restapiclient.util.ResponseEither;
  * </p>
  * 
  * @since 1.0.0
- * @version 1.0.0
+ * @version 1.0.1
  * 
- * @lastUpdate 2022-10-18 - Daniele Del Vecchio.
+ * @lastUpdate 2022-11-29 - JS.
  * 
  */
 public class HttpMethod implements HttpMethodInterface {
@@ -87,6 +87,44 @@ public class HttpMethod implements HttpMethodInterface {
                                     this.alfrescoRestApi.getPassword()))
                     .header("Accept", MimetypeConstants.APPLICATION_JSON)
                     .POST(HttpRequest.BodyPublishers.ofString(inputBody.toJSON().toString()))
+                    .build();
+
+            HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+
+            if (httpResponse.statusCode() != httpSuccessCode) {
+                JSONObject responseJson = new JSONObject(httpResponse.body());
+                JSONObject error = responseJson.getJSONObject("error");
+                return ResponseEither.error(
+                        new Error(httpResponse.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
+            }
+
+            JSONObject responseObj = new JSONObject(httpResponse.body());
+            return ResponseEither.data(responseObj);
+
+        } catch (Exception e) {
+
+            return ResponseEither.error(new Error(500, "Internal server error", e.getMessage()));
+
+        }
+        
+    }
+
+    @Override
+    public ResponseEither<Error, JSONObject> put(String url, InputBody inputBody, int httpSuccessCode) {
+
+        HttpClient httpClient = HttpClient.newHttpClient();
+
+        try {
+
+            HttpRequest httpRequest = HttpRequest.newBuilder()
+                    .uri(new URI(url))
+                    .version(HttpClient.Version.HTTP_2)
+                    .header("Authorization",
+                            APIUtil.getBasicAuthenticationHeader(
+                                    this.alfrescoRestApi.getUser(),
+                                    this.alfrescoRestApi.getPassword()))
+                    .header("Accept", MimetypeConstants.APPLICATION_JSON)
+                    .PUT(HttpRequest.BodyPublishers.ofString(inputBody.toJSON().toString()))
                     .build();
 
             HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());

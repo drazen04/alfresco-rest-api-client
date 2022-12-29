@@ -14,15 +14,16 @@ import it.stepwise.alfresco.restapiclient.util.ResponseEither;
  * </p>
  * 
  * @since 1.0.0
- * @version 1.0.0
+ * @version 1.0.1
  * 
- * @lastUpdate 2022-10-18 - Daniele Del Vecchio.
+ * @lastUpdate 2022-11-29 - JS.
  * 
  */
 public interface HttpMethodInterface {
 
     public ResponseEither<Error, JSONObject> get(String url, int httpSuccessCode);
     public ResponseEither<Error, JSONObject> post(String url, InputBody inputBody, int httpSuccessCode);
+    public ResponseEither<Error, JSONObject> put(String url, InputBody inputBody, int httpSuccessCode);
     public ResponseEither<Error, JSONObject> delete(String url, int httpSuccessCode);
     
     public ResponseEither<Error, JSONObject> postWithoutBody(String url, int httpSuccessCode);
