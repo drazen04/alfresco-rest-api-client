@@ -14,7 +14,7 @@ public class NodesApiTest {
     private Host host = new Host("", "");
     private AlfrescoRestApi alfrescoRestApi = new AlfrescoRestApi(this.host, "", "");
     private HttpMethod httpMethod = new HttpMethod(this.alfrescoRestApi);
-    private NodesApi nodesApi = new NodesApi(this.alfrescoRestApi, this.httpMethod);
+    private NodesApi nodesApi = new NodesApi(this.alfrescoRestApi);
 
     @Test
     public void t1_getNode() {

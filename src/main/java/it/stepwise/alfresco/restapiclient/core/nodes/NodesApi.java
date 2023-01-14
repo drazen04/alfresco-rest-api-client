@@ -24,26 +24,22 @@ public class NodesApi {
 
     private final AlfrescoRestApi alfrescoRestApi;
     private final int numVersion;
-
-    private final HttpMethod httpMethod;
     
-    public NodesApi(AlfrescoRestApi alfrescoRestApi, HttpMethod httpMethod) {
+    public NodesApi(AlfrescoRestApi alfrescoRestApi) {
         this.alfrescoRestApi = alfrescoRestApi;
         this.numVersion = 1;
-        this.httpMethod = httpMethod;
     }
 
-    public NodesApi(AlfrescoRestApi alfrescoRestApi, int numVersion, HttpMethod httpMethod) {
+    public NodesApi(AlfrescoRestApi alfrescoRestApi, int numVersion) {
         this.alfrescoRestApi = alfrescoRestApi;
         this.numVersion = numVersion;
-        this.httpMethod = httpMethod;
     }
 
     public ResponseEither<Error, JSONObject> getNode(String nodeId) {
         
         String url = this.buildNodeUrl(nodeId);
         
-        return this.httpMethod.get(url, 200);
+        return new HttpMethod(this.alfrescoRestApi).get(url, 200);
 
     }
     
@@ -58,7 +54,7 @@ public class NodesApi {
                         APIUtil.composeURL(urlCreateAutoRename, (urlComposed) -> urlComposed + "/children") + "?" + "include=" + Stream.of(include).map(incl -> incl.value).collect(Collectors.joining(",")) :
                         APIUtil.composeURL(urlCreateAutoRename, (urlComposed) -> urlComposed + "/children");
         
-        return this.httpMethod.post(urlCreateInclude, nodeBodyCreate, 201);
+        return new HttpMethod(this.alfrescoRestApi).post(urlCreateInclude, nodeBodyCreate, 201);
     }
 
     public ResponseEither<Error, JSONObject> deleteNode(String nodeId, boolean permanent) {
@@ -67,7 +63,7 @@ public class NodesApi {
         String urlDelete =
                 APIUtil.composeURL(url, (urlComposed) -> urlComposed + "?" + "permanent=" + false);
 
-        return this.httpMethod.delete(urlDelete, 204);
+        return new HttpMethod(this.alfrescoRestApi).delete(urlDelete, 204);
     }
 
     public ResponseEither<Error, JSONObject> deleteNodeAssociation(String nodeId, String targetId, String assocType) {
@@ -78,7 +74,7 @@ public class NodesApi {
                 APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/targets/" + targetId) :
                 APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/targets/" + targetId + "?" + "assocType=" + assocType);
 
-        return this.httpMethod.delete(urlDeleteNodeAssociation, 204);
+        return new HttpMethod(this.alfrescoRestApi).delete(urlDeleteNodeAssociation, 204);
     }
 
     public ResponseEither<Error, JSONObject> createNode(String nodeId, NodeBodyCreate nodeBodyCreate, /*TODO: insert fields*/Include... include) {
@@ -99,7 +95,7 @@ public class NodesApi {
                         APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/lock") + "?" + "include=" + Stream.of(include).map(incl -> incl.value).collect(Collectors.joining(",")) :
                         APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/lock");
 
-        return this.httpMethod.post(urlLock, nodeBodyLock, 200);
+        return new HttpMethod(this.alfrescoRestApi).post(urlLock, nodeBodyLock, 200);
     }
 
     public ResponseEither<Error, JSONObject> unlockNode(String nodeId, /*TODO: insert fields*/Include... include) {
@@ -110,7 +106,7 @@ public class NodesApi {
                         APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/unlock") + "?" + "include=" + Stream.of(include).map(incl -> incl.value).collect(Collectors.joining(",")) :
                         APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/unlock");
         
-        return this.httpMethod.postWithoutBody(urlLock, 200);
+        return new HttpMethod(this.alfrescoRestApi).postWithoutBody(urlLock, 200);
     }
 
     public ResponseEither<Error, JSONObject> moveNode(String nodeId, NodeBodyMove nodeBodyMove, Include... include) {
@@ -121,7 +117,7 @@ public class NodesApi {
                         APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/move") + "?" + "include=" + Stream.of(include).map(incl -> incl.value).collect(Collectors.joining(",")) :
                         APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/move");
 
-        return this.httpMethod.post(urlMove, nodeBodyMove, 200);
+        return new HttpMethod(this.alfrescoRestApi).post(urlMove, nodeBodyMove, 200);
     }
 
     public ResponseEither<Error, JSONObject> copyNode(String nodeId, NodeBodyCopy nodeBodyCopy, /*TODO: insert fields*/Include... include) {
@@ -132,15 +128,9 @@ public class NodesApi {
                         APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/copy") + "?" + "include=" + Stream.of(include).map(incl -> incl.value).collect(Collectors.joining(",")) :
                         APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/copy");
 
-        return this.httpMethod.post(urlCopy, nodeBodyCopy, 201);
+        return new HttpMethod(this.alfrescoRestApi).post(urlCopy, nodeBodyCopy, 201);
     }
 
-    /**
-     * TODO: make interface for HTTP Method
-     * @param url
-     * @param inputBody
-     * @return
-     */
     public ResponseEither<Error, JSONObject> getListNodeChildren(String nodeId) {
         String url = buildNodeUrl(nodeId);
 
