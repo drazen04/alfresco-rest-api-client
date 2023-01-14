@@ -11,7 +11,7 @@ import it.stepwise.alfresco.restapiclient.AlfrescoRestApi;
 import it.stepwise.alfresco.restapiclient.InputBody;
 import it.stepwise.alfresco.restapiclient.common.MimetypeConstants;
 import it.stepwise.alfresco.restapiclient.util.APIUtil;
-import it.stepwise.alfresco.restapiclient.util.Error;
+import it.stepwise.alfresco.restapiclient.util.ErrorResponse;
 import it.stepwise.alfresco.restapiclient.util.ResponseEither;
 
 /**
@@ -36,7 +36,7 @@ public class HttpMethod implements HttpMethodInterface {
     }
 
     @Override
-    public ResponseEither<Error, JSONObject> get(String url, int httpSuccessCode) {
+    public ResponseEither<ErrorResponse, JSONObject> get(String url, int httpSuccessCode) {
         
         HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -58,21 +58,21 @@ public class HttpMethod implements HttpMethodInterface {
             if (httpResponse.statusCode() != httpSuccessCode) {
                 JSONObject error = responseJson.getJSONObject("error");
                 return ResponseEither.error(
-                        new Error(httpResponse.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
+                        new ErrorResponse(httpResponse.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
             }
             
             return ResponseEither.data(responseJson.getJSONObject("entry"));
             
         } catch (Exception e) {
             
-            return ResponseEither.error(new Error(500, "Internal server error", e.getMessage()));
+            return ResponseEither.error(new ErrorResponse(500, "Internal server error", e.getMessage()));
             
         }
         
     }
 
     @Override
-    public ResponseEither<Error, JSONObject> post(String url, InputBody inputBody, int httpSuccessCode) {
+    public ResponseEither<ErrorResponse, JSONObject> post(String url, InputBody inputBody, int httpSuccessCode) {
 
         HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -95,7 +95,7 @@ public class HttpMethod implements HttpMethodInterface {
                 JSONObject responseJson = new JSONObject(httpResponse.body());
                 JSONObject error = responseJson.getJSONObject("error");
                 return ResponseEither.error(
-                        new Error(httpResponse.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
+                        new ErrorResponse(httpResponse.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
             }
 
             JSONObject responseObj = new JSONObject(httpResponse.body());
@@ -103,14 +103,14 @@ public class HttpMethod implements HttpMethodInterface {
 
         } catch (Exception e) {
 
-            return ResponseEither.error(new Error(500, "Internal server error", e.getMessage()));
+            return ResponseEither.error(new ErrorResponse(500, "Internal server error", e.getMessage()));
 
         }
 
     }
 
     @Override
-    public ResponseEither<Error, JSONObject> delete(String url, int httpSuccessCode) {
+    public ResponseEither<ErrorResponse, JSONObject> delete(String url, int httpSuccessCode) {
 
         HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -132,7 +132,7 @@ public class HttpMethod implements HttpMethodInterface {
                 JSONObject responseJson = new JSONObject(httpResponse.body());
                 JSONObject error = responseJson.getJSONObject("error");
                 return ResponseEither.error(
-                        new Error(httpResponse.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
+                        new ErrorResponse(httpResponse.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
             }
 
             JSONObject responseObj = new JSONObject();
@@ -140,14 +140,14 @@ public class HttpMethod implements HttpMethodInterface {
 
         } catch (Exception e) {
 
-            return ResponseEither.error(new Error(500, "Internal server error", e.getMessage()));
+            return ResponseEither.error(new ErrorResponse(500, "Internal server error", e.getMessage()));
 
         }
 
     }
 
     @Override
-    public ResponseEither<Error, JSONObject> postWithoutBody(String url, int httpSuccessCode) {
+    public ResponseEither<ErrorResponse, JSONObject> postWithoutBody(String url, int httpSuccessCode) {
 
         HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -170,7 +170,7 @@ public class HttpMethod implements HttpMethodInterface {
                 JSONObject responseJson = new JSONObject(httpResponse.body());
                 JSONObject error = responseJson.getJSONObject("error");
                 return ResponseEither.error(
-                        new Error(httpResponse.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
+                        new ErrorResponse(httpResponse.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
             }
 
             JSONObject responseObj = new JSONObject(httpResponse.body());
@@ -178,7 +178,7 @@ public class HttpMethod implements HttpMethodInterface {
 
         } catch (Exception e) {
 
-            return ResponseEither.error(new Error(500, "Internal server error", e.getMessage()));
+            return ResponseEither.error(new ErrorResponse(500, "Internal server error", e.getMessage()));
 
         }
 

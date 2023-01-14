@@ -1,5 +1,6 @@
 package it.stepwise.alfresco.restapiclient.core.nodes;
 
+import it.stepwise.alfresco.restapiclient.util.ErrorResponse;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +20,7 @@ public class NodesApiTest {
     @Test
     public void t1_getNode() {
 
-        ResponseEither<it.stepwise.alfresco.restapiclient.util.Error, JSONObject> responseEither = this.nodesApi.getNode(
+        ResponseEither<ErrorResponse, JSONObject> responseEither = this.nodesApi.getNode(
                 "");
 
         System.out.println(responseEither.getData());
@@ -30,7 +31,7 @@ public class NodesApiTest {
     public void t2_createNode() {
 
         NodeBodyCreate nodeBodyCreate = new NodeBodyCreate("", "");
-        ResponseEither<it.stepwise.alfresco.restapiclient.util.Error, JSONObject> responseEither = this.nodesApi.createNode(
+        ResponseEither<ErrorResponse, JSONObject> responseEither = this.nodesApi.createNode(
                 "",
                 false,
                 nodeBodyCreate,

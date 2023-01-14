@@ -17,7 +17,7 @@ import it.stepwise.alfresco.restapiclient.AlfrescoRestApi;
 import it.stepwise.alfresco.restapiclient.core.HttpMethod;
 import it.stepwise.alfresco.restapiclient.core.nodes.nodesparams.Include;
 import it.stepwise.alfresco.restapiclient.util.APIUtil;
-import it.stepwise.alfresco.restapiclient.util.Error;
+import it.stepwise.alfresco.restapiclient.util.ErrorResponse;
 import it.stepwise.alfresco.restapiclient.util.ResponseEither;
 
 public class NodesApi {
@@ -35,7 +35,7 @@ public class NodesApi {
         this.numVersion = numVersion;
     }
 
-    public ResponseEither<Error, JSONObject> getNode(String nodeId) {
+    public ResponseEither<ErrorResponse, JSONObject> getNode(String nodeId) {
         
         String url = this.buildNodeUrl(nodeId);
         
@@ -43,7 +43,7 @@ public class NodesApi {
 
     }
     
-    public ResponseEither<Error, JSONObject> createNode(String nodeId, boolean autoRename, NodeBodyCreate nodeBodyCreate, /*TODO: insert fields*/Include... include) {
+    public ResponseEither<ErrorResponse, JSONObject> createNode(String nodeId, boolean autoRename, NodeBodyCreate nodeBodyCreate, /*TODO: insert fields*/Include... include) {
         String url = buildNodeUrl(nodeId);
 
         String urlCreateAutoRename =
@@ -57,7 +57,7 @@ public class NodesApi {
         return new HttpMethod(this.alfrescoRestApi).post(urlCreateInclude, nodeBodyCreate, 201);
     }
 
-    public ResponseEither<Error, JSONObject> deleteNode(String nodeId, boolean permanent) {
+    public ResponseEither<ErrorResponse, JSONObject> deleteNode(String nodeId, boolean permanent) {
         String url = buildNodeUrl(nodeId);
 
         String urlDelete =
@@ -66,7 +66,7 @@ public class NodesApi {
         return new HttpMethod(this.alfrescoRestApi).delete(urlDelete, 204);
     }
 
-    public ResponseEither<Error, JSONObject> deleteNodeAssociation(String nodeId, String targetId, String assocType) {
+    public ResponseEither<ErrorResponse, JSONObject> deleteNodeAssociation(String nodeId, String targetId, String assocType) {
         String url = buildNodeUrl(nodeId);
 
         String urlDeleteNodeAssociation =
@@ -77,17 +77,17 @@ public class NodesApi {
         return new HttpMethod(this.alfrescoRestApi).delete(urlDeleteNodeAssociation, 204);
     }
 
-    public ResponseEither<Error, JSONObject> createNode(String nodeId, NodeBodyCreate nodeBodyCreate, /*TODO: insert fields*/Include... include) {
+    public ResponseEither<ErrorResponse, JSONObject> createNode(String nodeId, NodeBodyCreate nodeBodyCreate, /*TODO: insert fields*/Include... include) {
 
         return createNode(nodeId, false, nodeBodyCreate, include);
     }
 
-    public ResponseEither<Error, JSONObject> updateNode(String nodeId, JSONObject jsonBodyUpdate, /*TODO: insert fields*/Include... include) {
+    public ResponseEither<ErrorResponse, JSONObject> updateNode(String nodeId, JSONObject jsonBodyUpdate, /*TODO: insert fields*/Include... include) {
         String url = buildNodeUrl(nodeId);
         return null;
     }
 
-    public ResponseEither<Error, JSONObject> lockNode(String nodeId, NodeBodyLock nodeBodyLock, /*TODO: insert fields*/Include... include) {
+    public ResponseEither<ErrorResponse, JSONObject> lockNode(String nodeId, NodeBodyLock nodeBodyLock, /*TODO: insert fields*/Include... include) {
         String url = buildNodeUrl(nodeId);
 
         String urlLock =
@@ -98,7 +98,7 @@ public class NodesApi {
         return new HttpMethod(this.alfrescoRestApi).post(urlLock, nodeBodyLock, 200);
     }
 
-    public ResponseEither<Error, JSONObject> unlockNode(String nodeId, /*TODO: insert fields*/Include... include) {
+    public ResponseEither<ErrorResponse, JSONObject> unlockNode(String nodeId, /*TODO: insert fields*/Include... include) {
         String url = buildNodeUrl(nodeId);
 
         String urlLock =
@@ -109,7 +109,7 @@ public class NodesApi {
         return new HttpMethod(this.alfrescoRestApi).postWithoutBody(urlLock, 200);
     }
 
-    public ResponseEither<Error, JSONObject> moveNode(String nodeId, NodeBodyMove nodeBodyMove, Include... include) {
+    public ResponseEither<ErrorResponse, JSONObject> moveNode(String nodeId, NodeBodyMove nodeBodyMove, Include... include) {
         String url = buildNodeUrl(nodeId);
 
         String urlMove =
@@ -120,7 +120,7 @@ public class NodesApi {
         return new HttpMethod(this.alfrescoRestApi).post(urlMove, nodeBodyMove, 200);
     }
 
-    public ResponseEither<Error, JSONObject> copyNode(String nodeId, NodeBodyCopy nodeBodyCopy, /*TODO: insert fields*/Include... include) {
+    public ResponseEither<ErrorResponse, JSONObject> copyNode(String nodeId, NodeBodyCopy nodeBodyCopy, /*TODO: insert fields*/Include... include) {
         String url = buildNodeUrl(nodeId);
 
         String urlCopy =
@@ -131,7 +131,7 @@ public class NodesApi {
         return new HttpMethod(this.alfrescoRestApi).post(urlCopy, nodeBodyCopy, 201);
     }
 
-    public ResponseEither<Error, JSONObject> getListNodeChildren(String nodeId) {
+    public ResponseEither<ErrorResponse, JSONObject> getListNodeChildren(String nodeId) {
         String url = buildNodeUrl(nodeId);
 
         String urlChildren =  APIUtil.composeURL(url, (urlComposed) -> urlComposed + "/children");
@@ -152,13 +152,13 @@ public class NodesApi {
             if (response.statusCode() != 200) {
                 JSONObject responseJson = new JSONObject(response.body());
                 JSONObject error = responseJson.getJSONObject("error");
-                return ResponseEither.error(new Error(response.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
+                return ResponseEither.error(new ErrorResponse(response.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
             }
 
             JSONObject responseArray = new JSONObject(response.body());
             return ResponseEither.data(responseArray);
         } catch (Exception e) {
-            return ResponseEither.error(new Error(500, "Internal server error", e.getMessage()));
+            return ResponseEither.error(new ErrorResponse(500, "Internal server error", e.getMessage()));
         }
     }
 

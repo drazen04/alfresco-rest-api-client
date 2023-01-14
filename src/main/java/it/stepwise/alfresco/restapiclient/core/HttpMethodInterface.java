@@ -3,7 +3,7 @@ package it.stepwise.alfresco.restapiclient.core;
 import org.json.JSONObject;
 
 import it.stepwise.alfresco.restapiclient.InputBody;
-import it.stepwise.alfresco.restapiclient.util.Error;
+import it.stepwise.alfresco.restapiclient.util.ErrorResponse;
 import it.stepwise.alfresco.restapiclient.util.ResponseEither;
 
 /**
@@ -21,10 +21,10 @@ import it.stepwise.alfresco.restapiclient.util.ResponseEither;
  */
 public interface HttpMethodInterface {
 
-    public ResponseEither<Error, JSONObject> get(String url, int httpSuccessCode);
-    public ResponseEither<Error, JSONObject> post(String url, InputBody inputBody, int httpSuccessCode);
-    public ResponseEither<Error, JSONObject> delete(String url, int httpSuccessCode);
+    public ResponseEither<ErrorResponse, JSONObject> get(String url, int httpSuccessCode);
+    public ResponseEither<ErrorResponse, JSONObject> post(String url, InputBody inputBody, int httpSuccessCode);
+    public ResponseEither<ErrorResponse, JSONObject> delete(String url, int httpSuccessCode);
     
-    public ResponseEither<Error, JSONObject> postWithoutBody(String url, int httpSuccessCode);
+    public ResponseEither<ErrorResponse, JSONObject> postWithoutBody(String url, int httpSuccessCode);
 	
 }

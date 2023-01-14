@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import it.stepwise.alfresco.restapiclient.util.ErrorResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ public class SearchApiTest {
         Query query = new Query("TYPE:\"cm:content\"");
         searchBody.setQuery(query);
 
-        ResponseEither<it.stepwise.alfresco.restapiclient.util.Error, JSONObject> responseEither = this.searchApi.search(
+        ResponseEither<ErrorResponse, JSONObject> responseEither = this.searchApi.search(
             searchBody);
 
         System.out.println(responseEither.getData());
@@ -133,7 +134,7 @@ public class SearchApiTest {
         Paging paging = new Paging(10, 5);
         searchBody.setPaging(paging);
 
-        ResponseEither<it.stepwise.alfresco.restapiclient.util.Error, JSONObject> responseEither = this.searchApi.search(
+        ResponseEither<ErrorResponse, JSONObject> responseEither = this.searchApi.search(
             searchBody);
 
         assertEquals(responseEither.getError(), null);
@@ -153,7 +154,7 @@ public class SearchApiTest {
         Paging paging = new Paging(10, 5);
         searchBody.setPaging(paging);
 
-        ResponseEither<it.stepwise.alfresco.restapiclient.util.Error, JSONObject> responseEither = this.searchApi.search(
+        ResponseEither<ErrorResponse, JSONObject> responseEither = this.searchApi.search(
             searchBody);
 
         assertEquals(responseEither.getError(), null);
@@ -167,7 +168,7 @@ public class SearchApiTest {
         Query query = new Query(Language.CMIS, "select * from cmis:document where cmis:name='Test.docx'");
         searchBody.setQuery(query);
 
-        ResponseEither<it.stepwise.alfresco.restapiclient.util.Error, JSONObject> responseEither = this.searchApi.search(
+        ResponseEither<ErrorResponse, JSONObject> responseEither = this.searchApi.search(
             searchBody);
 
         assertEquals(responseEither.getError(), null);
@@ -186,7 +187,7 @@ public class SearchApiTest {
         Query query = new Query(Language.CMIS, cmis.buildQuery());
         searchBody.setQuery(query);
 
-        ResponseEither<it.stepwise.alfresco.restapiclient.util.Error, JSONObject> responseEither = this.searchApi.search(searchBody);
+        ResponseEither<ErrorResponse, JSONObject> responseEither = this.searchApi.search(searchBody);
 
         assertEquals(responseEither.getData(), null);
 

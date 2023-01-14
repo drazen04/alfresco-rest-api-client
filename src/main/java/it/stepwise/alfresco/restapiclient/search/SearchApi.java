@@ -19,7 +19,7 @@ import it.stepwise.alfresco.restapiclient.InputBody;
 import it.stepwise.alfresco.restapiclient.common.MimetypeConstants;
 import it.stepwise.alfresco.restapiclient.core.HttpMethod;
 import it.stepwise.alfresco.restapiclient.util.APIUtil;
-import it.stepwise.alfresco.restapiclient.util.Error;
+import it.stepwise.alfresco.restapiclient.util.ErrorResponse;
 import it.stepwise.alfresco.restapiclient.util.ResponseEither;
 
 public class SearchApi {
@@ -46,7 +46,7 @@ public class SearchApi {
         this.httpMethod = new HttpMethod(alfrescoRestApi);
     }
 
-    public ResponseEither<Error, JSONObject> search(InputBody inputBody) {
+    public ResponseEither<ErrorResponse, JSONObject> search(InputBody inputBody) {
         
         String url = this.buildSearchUrl();
         
@@ -65,7 +65,7 @@ public class SearchApi {
     }
 
     // TODO move in utility class or create another function ad hoc in HttpMethod
-    public ResponseEither<Error, JSONObject> post(String url, InputBody inputBody, int httpSuccessCode) {
+    public ResponseEither<ErrorResponse, JSONObject> post(String url, InputBody inputBody, int httpSuccessCode) {
 
         HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -93,7 +93,7 @@ public class SearchApi {
                 JSONObject responseJson = new JSONObject(httpResponse.body());
                 JSONObject error = responseJson.getJSONObject("error");
                 return ResponseEither.error(
-                        new Error(httpResponse.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
+                        new ErrorResponse(httpResponse.statusCode(), error.getString("errorKey"), error.getString("briefSummary")));
             }
 
             JSONObject responseObj = new JSONObject(httpResponse.body());
@@ -101,7 +101,7 @@ public class SearchApi {
 
         } catch (Exception e) {
 
-            return ResponseEither.error(new Error(500, "Internal server error", e.getMessage()));
+            return ResponseEither.error(new ErrorResponse(500, "Internal server error", e.getMessage()));
 
         }
 

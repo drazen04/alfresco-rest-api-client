@@ -1,18 +1,11 @@
 package it.stepwise.alfresco.restapiclient.util;
-
-/**
- *
- *
- * @param L
- * @param R
- */
 public class ResponseEither<L, R> {
 
-    private final Error error;
+    private final ErrorResponse errorResponse;
     private final R data;
 
-    private ResponseEither(Error error, R data) {
-        this.error = error;
+    private ResponseEither(ErrorResponse errorResponse, R data) {
+        this.errorResponse = errorResponse;
         this.data = data;
     }
 
@@ -20,7 +13,7 @@ public class ResponseEither<L, R> {
         return new ResponseEither<>(null, value);
     }
 
-    public static <L, R> ResponseEither<L, R> error(Error value) {
+    public static <L, R> ResponseEither<L, R> error(ErrorResponse value) {
         return new ResponseEither<>(value, null);
     }
 
@@ -28,12 +21,12 @@ public class ResponseEither<L, R> {
         return this.data;
     }
 
-    public Error getError() {
-        return this.error;
+    public ErrorResponse getError() {
+        return this.errorResponse;
     }
 
     public boolean hasError() {
-        return this.error != null;
+        return this.errorResponse != null;
     }
 
     public boolean hasData() {
