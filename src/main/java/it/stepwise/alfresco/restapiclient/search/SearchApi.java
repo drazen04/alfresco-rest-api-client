@@ -52,8 +52,6 @@ public class SearchApi {
         
         //return this.httpMethod.post(url, queryBody, this.numVersion);
         return this.post(url, inputBody, 200);
-
-
     }
     
     private String buildSearchUrl() {
