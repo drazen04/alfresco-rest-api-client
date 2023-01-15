@@ -8,6 +8,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import it.stepwise.alfresco.restapiclient.core.nodes.BodyResponse;
 import org.json.JSONObject;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -46,12 +48,9 @@ public class SearchApi {
         this.httpMethod = new HttpMethod(alfrescoRestApi);
     }
 
-    public ResponseEither<ErrorResponse, JSONObject> search(InputBody inputBody) {
-        
-        String url = this.buildSearchUrl();
-        
-        //return this.httpMethod.post(url, queryBody, this.numVersion);
-        return this.post(url, inputBody, 200);
+    public ResponseEither<ErrorResponse, BodyResponse> search(InputBody inputBody) {
+
+        return this.post(this.buildSearchUrl(), inputBody, 200);
     }
     
     private String buildSearchUrl() {
@@ -63,7 +62,7 @@ public class SearchApi {
     }
 
     // TODO move in utility class or create another function ad hoc in HttpMethod
-    public ResponseEither<ErrorResponse, JSONObject> post(String url, InputBody inputBody, int httpSuccessCode) {
+    public ResponseEither<ErrorResponse, BodyResponse> post(String url, InputBody inputBody, int httpSuccessCode) {
 
         HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -95,7 +94,7 @@ public class SearchApi {
             }
 
             JSONObject responseObj = new JSONObject(httpResponse.body());
-            return ResponseEither.data(responseObj);
+            return ResponseEither.data( new BodyResponse(responseObj) );
 
         } catch (Exception e) {
 

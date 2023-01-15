@@ -5,6 +5,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import it.stepwise.alfresco.restapiclient.core.nodes.BodyResponse;
 import org.json.JSONObject;
 
 import it.stepwise.alfresco.restapiclient.AlfrescoRestApi;
@@ -72,7 +73,7 @@ public class HttpMethod implements HttpMethodInterface {
     }
 
     @Override
-    public ResponseEither<ErrorResponse, JSONObject> post(String url, InputBody inputBody, int httpSuccessCode) {
+    public ResponseEither<ErrorResponse, BodyResponse> post(String url, InputBody inputBody, int httpSuccessCode) {
 
         HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -99,7 +100,7 @@ public class HttpMethod implements HttpMethodInterface {
             }
 
             JSONObject responseObj = new JSONObject(httpResponse.body());
-            return ResponseEither.data(responseObj);
+            return ResponseEither.data( new BodyResponse(responseObj) );
 
         } catch (Exception e) {
 
@@ -110,7 +111,7 @@ public class HttpMethod implements HttpMethodInterface {
     }
 
     @Override
-    public ResponseEither<ErrorResponse, JSONObject> delete(String url, int httpSuccessCode) {
+    public ResponseEither<ErrorResponse, BodyResponse> delete(String url, int httpSuccessCode) {
 
         HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -136,7 +137,7 @@ public class HttpMethod implements HttpMethodInterface {
             }
 
             JSONObject responseObj = new JSONObject();
-            return ResponseEither.data(responseObj);
+            return ResponseEither.data( new BodyResponse((responseObj)));
 
         } catch (Exception e) {
 

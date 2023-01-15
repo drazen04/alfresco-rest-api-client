@@ -43,7 +43,7 @@ public class NodesApi {
 
     }
     
-    public ResponseEither<ErrorResponse, JSONObject> createNode(String nodeId, boolean autoRename, NodeBodyCreate nodeBodyCreate, /*TODO: insert fields*/Include... include) {
+    public ResponseEither<ErrorResponse, BodyResponse> createNode(String nodeId, boolean autoRename, NodeBodyCreate nodeBodyCreate, /*TODO: insert fields*/Include... include) {
         String url = buildNodeUrl(nodeId);
 
         String urlCreateAutoRename =
@@ -57,7 +57,7 @@ public class NodesApi {
         return new HttpMethod(this.alfrescoRestApi).post(urlCreateInclude, nodeBodyCreate, 201);
     }
 
-    public ResponseEither<ErrorResponse, JSONObject> deleteNode(String nodeId, boolean permanent) {
+    public ResponseEither<ErrorResponse, BodyResponse> deleteNode(String nodeId, boolean permanent) {
         String url = buildNodeUrl(nodeId);
 
         String urlDelete =
@@ -66,7 +66,7 @@ public class NodesApi {
         return new HttpMethod(this.alfrescoRestApi).delete(urlDelete, 204);
     }
 
-    public ResponseEither<ErrorResponse, JSONObject> deleteNodeAssociation(String nodeId, String targetId, String assocType) {
+    public ResponseEither<ErrorResponse, BodyResponse> deleteNodeAssociation(String nodeId, String targetId, String assocType) {
         String url = buildNodeUrl(nodeId);
 
         String urlDeleteNodeAssociation =
@@ -77,7 +77,7 @@ public class NodesApi {
         return new HttpMethod(this.alfrescoRestApi).delete(urlDeleteNodeAssociation, 204);
     }
 
-    public ResponseEither<ErrorResponse, JSONObject> createNode(String nodeId, NodeBodyCreate nodeBodyCreate, /*TODO: insert fields*/Include... include) {
+    public ResponseEither<ErrorResponse, BodyResponse> createNode(String nodeId, NodeBodyCreate nodeBodyCreate, /*TODO: insert fields*/Include... include) {
 
         return createNode(nodeId, false, nodeBodyCreate, include);
     }
@@ -87,7 +87,7 @@ public class NodesApi {
         return null;
     }
 
-    public ResponseEither<ErrorResponse, JSONObject> lockNode(String nodeId, NodeBodyLock nodeBodyLock, /*TODO: insert fields*/Include... include) {
+    public ResponseEither<ErrorResponse, BodyResponse> lockNode(String nodeId, NodeBodyLock nodeBodyLock, /*TODO: insert fields*/Include... include) {
         String url = buildNodeUrl(nodeId);
 
         String urlLock =
@@ -109,7 +109,7 @@ public class NodesApi {
         return new HttpMethod(this.alfrescoRestApi).postWithoutBody(urlLock, 200);
     }
 
-    public ResponseEither<ErrorResponse, JSONObject> moveNode(String nodeId, NodeBodyMove nodeBodyMove, Include... include) {
+    public ResponseEither<ErrorResponse, BodyResponse> moveNode(String nodeId, NodeBodyMove nodeBodyMove, Include... include) {
         String url = buildNodeUrl(nodeId);
 
         String urlMove =
@@ -120,7 +120,7 @@ public class NodesApi {
         return new HttpMethod(this.alfrescoRestApi).post(urlMove, nodeBodyMove, 200);
     }
 
-    public ResponseEither<ErrorResponse, JSONObject> copyNode(String nodeId, NodeBodyCopy nodeBodyCopy, /*TODO: insert fields*/Include... include) {
+    public ResponseEither<ErrorResponse, BodyResponse> copyNode(String nodeId, NodeBodyCopy nodeBodyCopy, /*TODO: insert fields*/Include... include) {
         String url = buildNodeUrl(nodeId);
 
         String urlCopy =

@@ -1,9 +1,6 @@
 package it.stepwise.alfresco.restapiclient.search;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import it.stepwise.alfresco.restapiclient.core.nodes.BodyResponse;
 import it.stepwise.alfresco.restapiclient.util.ErrorResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -27,9 +24,11 @@ import it.stepwise.alfresco.restapiclient.search.searchparams.Sort;
 import it.stepwise.alfresco.restapiclient.util.Host;
 import it.stepwise.alfresco.restapiclient.util.ResponseEither;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class SearchApiTest {
 
-    private Host host = new Host("https", "doc-qa.formatemp.it");
+    private Host host = new Host("http", "localhost");
     private AlfrescoRestApi alfrescoRestApi = new AlfrescoRestApi(this.host, "admin", "admin");
     private SearchApi searchApi = new SearchApi(this.alfrescoRestApi);
 
@@ -40,14 +39,14 @@ public class SearchApiTest {
         Query query = new Query("TYPE:\"cm:content\"");
         searchBody.setQuery(query);
 
-        ResponseEither<ErrorResponse, JSONObject> responseEither = this.searchApi.search(
+        ResponseEither<ErrorResponse, BodyResponse> responseEither = this.searchApi.search(
             searchBody);
 
         System.out.println(responseEither.getData());
 
-        assertEquals(responseEither.getError(), null);
-        assertTrue(responseEither.getData().getJSONObject("list") instanceof JSONObject);
-        assertTrue(responseEither.getData().getJSONObject("list").getJSONArray("entries") instanceof JSONArray);
+        assertNull(responseEither.getError());
+        assertNotNull(responseEither.getData().getList());
+        assertNotNull(responseEither.getData().getEntries());
     }
 
     @Test
@@ -134,10 +133,10 @@ public class SearchApiTest {
         Paging paging = new Paging(10, 5);
         searchBody.setPaging(paging);
 
-        ResponseEither<ErrorResponse, JSONObject> responseEither = this.searchApi.search(
+        ResponseEither<ErrorResponse, BodyResponse> responseEither = this.searchApi.search(
             searchBody);
 
-        assertEquals(responseEither.getError(), null);
+        assertNull(responseEither.getError());
 
     }
 
@@ -154,10 +153,10 @@ public class SearchApiTest {
         Paging paging = new Paging(10, 5);
         searchBody.setPaging(paging);
 
-        ResponseEither<ErrorResponse, JSONObject> responseEither = this.searchApi.search(
+        ResponseEither<ErrorResponse, BodyResponse> responseEither = this.searchApi.search(
             searchBody);
 
-        assertEquals(responseEither.getError(), null);
+        assertNull(responseEither.getError());
 
     }
 
@@ -168,15 +167,15 @@ public class SearchApiTest {
         Query query = new Query(Language.CMIS, "select * from cmis:document where cmis:name='Test.docx'");
         searchBody.setQuery(query);
 
-        ResponseEither<ErrorResponse, JSONObject> responseEither = this.searchApi.search(
+        ResponseEither<ErrorResponse, BodyResponse> responseEither = this.searchApi.search(
             searchBody);
 
-        assertEquals(responseEither.getError(), null);
+        assertNull(responseEither.getError());
 
     }
     
     @Test
-    public void t8_checkCMISQueryBuilder() throws JsonProcessingException {
+    public void t8_checkCMISQueryBuilder() {
 
         SearchBody searchBody = new SearchBody();
         CMIS cmis = CMIS.withType(Type.CMIS_ALFRESCO)
@@ -187,9 +186,9 @@ public class SearchApiTest {
         Query query = new Query(Language.CMIS, cmis.buildQuery());
         searchBody.setQuery(query);
 
-        ResponseEither<ErrorResponse, JSONObject> responseEither = this.searchApi.search(searchBody);
+        ResponseEither<ErrorResponse, BodyResponse> responseEither = this.searchApi.search(searchBody);
 
-        assertEquals(responseEither.getData(), null);
+        assert(responseEither.getData().getEntries().isEmpty());
 
     }
 

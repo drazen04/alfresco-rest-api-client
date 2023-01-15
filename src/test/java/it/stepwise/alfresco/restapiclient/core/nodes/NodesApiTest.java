@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import it.stepwise.alfresco.restapiclient.AlfrescoRestApi;
-import it.stepwise.alfresco.restapiclient.core.HttpMethod;
 import it.stepwise.alfresco.restapiclient.core.nodes.nodesparams.Include;
 import it.stepwise.alfresco.restapiclient.util.Host;
 import it.stepwise.alfresco.restapiclient.util.ResponseEither;
@@ -29,13 +28,13 @@ public class NodesApiTest {
         searchBodyFolderTest.setQuery(queryFolderTest);
 
 
-        ResponseEither<ErrorResponse, JSONObject> searchResponseFolderTest = searchApi.search(
-                searchBodyFolderTest);
+        ResponseEither<ErrorResponse, BodyResponse> searchResponseFolderTest = searchApi.search(searchBodyFolderTest);
 
-        JSONObject entryFolderTest = searchResponseFolderTest.getData().getJSONObject("list").getJSONArray("entries").getJSONObject(0).getJSONObject("entry");
+        JSONObject entryFolderTest = searchResponseFolderTest.getData().getFirstEntry();
         String id = entryFolderTest.getString("id");
         String parentid = entryFolderTest.getString("parentId");
-        ResponseEither<ErrorResponse, JSONObject> responseEither = nodesApi.deleteNode(id, true);
+        ResponseEither<ErrorResponse, BodyResponse> responseEither = nodesApi.deleteNode(id, true);
+
         if (!responseEither.hasError()) {
             nodesApi.createNode(parentid, new NodeBodyCreate("test-folder", "cm:folder"));
         }
@@ -61,7 +60,7 @@ public class NodesApiTest {
         NodesApi nodesApi = new NodesApi(alfrescoRestApi);
 
         NodeBodyCreate nodeBodyCreate = new NodeBodyCreate("", "");
-        ResponseEither<ErrorResponse, JSONObject> responseEither = nodesApi.createNode(
+        ResponseEither<ErrorResponse, BodyResponse> responseEither = nodesApi.createNode(
                 "",
                 false,
                 nodeBodyCreate,
