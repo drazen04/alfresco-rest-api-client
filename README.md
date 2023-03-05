@@ -6,4 +6,4 @@ To use the alfresco api (in particular, before tests) in the local environment r
 make run-api
 ```
 
-The command will pull up services via docker-compose. The docker compose was created with the [alfresco generator](https://github.com/Alfresco/alfresco-docker-installer).
+The command will pull up services via docker-compose. The docker compose was created with the [alfresco docker generator](https://github.com/Alfresco/alfresco-docker-installer).
