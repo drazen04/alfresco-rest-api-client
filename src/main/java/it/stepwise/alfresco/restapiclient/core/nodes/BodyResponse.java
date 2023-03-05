@@ -21,8 +21,14 @@ public class BodyResponse {
     }
 
     public JSONObject getEntryAtIndex(int index) {
-        return getEntries().getJSONObject(0).getJSONObject("entry");
+        if (getEntries().length() == 0) return new JSONObject();
+        return getEntries().getJSONObject(index).getJSONObject("entry");
     }
+
+    public boolean hasEntries() {
+        return getEntries().length() != 0;
+    }
+
 
     public JSONObject getFirstEntry() {
         return getEntryAtIndex(0);

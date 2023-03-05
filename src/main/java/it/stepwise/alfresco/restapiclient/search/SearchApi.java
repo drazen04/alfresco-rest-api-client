@@ -49,7 +49,6 @@ public class SearchApi {
     }
 
     public ResponseEither<ErrorResponse, BodyResponse> search(InputBody inputBody) {
-
         return this.post(this.buildSearchUrl(), inputBody, 200);
     }
     

@@ -36,11 +36,7 @@ public class NodesApi {
     }
 
     public ResponseEither<ErrorResponse, JSONObject> getNode(String nodeId) {
-        
-        String url = this.buildNodeUrl(nodeId);
-        
-        return new HttpMethod(this.alfrescoRestApi).get(url, 200);
-
+        return new HttpMethod(this.alfrescoRestApi).get(this.buildNodeUrl(nodeId), 200);
     }
     
     public ResponseEither<ErrorResponse, BodyResponse> createNode(String nodeId, boolean autoRename, NodeBodyCreate nodeBodyCreate, /*TODO: insert fields*/Include... include) {
@@ -78,7 +74,6 @@ public class NodesApi {
     }
 
     public ResponseEither<ErrorResponse, BodyResponse> createNode(String nodeId, NodeBodyCreate nodeBodyCreate, /*TODO: insert fields*/Include... include) {
-
         return createNode(nodeId, false, nodeBodyCreate, include);
     }
 

@@ -18,6 +18,12 @@ public class AlfrescoRestApi {
         this.user = user;
         this.password = password;
     }
+    public AlfrescoRestApi(String user, String password) {
+        this.host = new Host("http", "localhost");
+        this.numVersion = 1;
+        this.user = user;
+        this.password = password;
+    }
 
     public AlfrescoRestApi(Host host, int numVersion, String user, String password) {
         this.host = host;
