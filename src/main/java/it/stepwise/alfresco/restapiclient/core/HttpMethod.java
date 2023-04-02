@@ -65,9 +65,7 @@ public class HttpMethod implements HttpMethodInterface {
             return ResponseEither.data(responseJson.getJSONObject("entry"));
             
         } catch (Exception e) {
-            
             return ResponseEither.error(new ErrorResponse(500, "Internal server error", e.getMessage()));
-            
         }
         
     }

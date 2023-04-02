@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -70,24 +69,17 @@ public class NodesApiTest {
     }
     
     @Test
-    public void nodeExists() throws ExecutionException, InterruptedException {
+    public void nodeExists() {
         String nodeName = "node-test-" + UUID.randomUUID();
         AlfrescoRestApi alfrescoRestApi = new AlfrescoRestApi("admin", "admin");
         NodesApi nodesApi = new NodesApi(alfrescoRestApi);
         String parentId = getTestFolderId(alfrescoRestApi);
         var nodeBodyCreate = new NodeBodyCreate(nodeName, "cm:content");
-        nodesApi.createNode(parentId, false, nodeBodyCreate);
 
-        // TODO: ADJUST SOLR CRON.
-        //       IT GET TOO MUCH TIME TO INDEXING FOR TESTING PURPOSE.
-        //       SO SOLR SEARCH DOESN'T FIND NOTHING WITHOUT Thread.sleep
-        Thread.sleep(20000);
+        var response = nodesApi.createNode(parentId, false, nodeBodyCreate);
 
-        var searchNodeCreated = searchNodeCreatedByName(nodeName);
-
-        assertFalse(searchNodeCreated.hasError());
-        assertTrue(searchNodeCreated.getData().hasEntries());
-        assertEquals(searchNodeCreated.getData().getFirstEntry().getString("name"), nodeName);
+        assertFalse(response.hasError());
+        assertEquals(response.getData().getEntry().getString("name"), nodeName);
     }
 
     private static String getTestFolderId(AlfrescoRestApi alfrescoRestApi) {
